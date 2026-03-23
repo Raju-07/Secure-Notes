@@ -42,7 +42,7 @@ export default function SettingsScreen({ navigation }) {
         <SettingItem 
             icon="shield-outline" 
             title="Encryption" 
-            color="#10B981"
+            color="#6366F1"
             onPress={() => console.log("Welcome to Encryption")} 
           />
 
@@ -57,14 +57,14 @@ export default function SettingsScreen({ navigation }) {
         <SettingItem 
           icon="chatbubble-ellipses-outline" 
           title="Feedback" 
-          color="#10B981"
+          color="#06B6D4"
           onPress={() => console.log("Navigate to Feedback Page")} 
         />
 
         <SettingItem 
           icon="share-social-outline" 
           title="Share App" 
-          color="#F59E0B"
+          color="#8B5CF6"
           onPress={() => console.log("Open Share Dialog")} 
         />
       </View>
