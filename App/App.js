@@ -6,17 +6,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const HomeScreen = () => (
-  <View style={styles.screen}>
-    <Text>Home Screen Content</Text>
-  </View>
-);
+import HomeScreen from '../screens/HomeScreen';
+import SettingsScreen from '../screens/SettingScreen';
 
-const SettingsScreen = () => (
-  <View style={styles.screen}>
-    <Text>Settings Screen Content</Text>
-  </View>
-);
+
 
 const Tab = createBottomTabNavigator();
 
