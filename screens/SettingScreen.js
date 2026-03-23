@@ -39,12 +39,14 @@ export default function SettingsScreen({ navigation }) {
             />
       </View>
 
+        <View style={styles.section}>
         <SettingItem 
             icon="shield-outline" 
             title="Encryption" 
             color="#6366F1"
             onPress={() => console.log("Welcome to Encryption")} 
-          />
+            />
+        </View>
 
       <View style={styles.section}>
         <SettingItem 
@@ -53,14 +55,18 @@ export default function SettingsScreen({ navigation }) {
           color="#3B82F6"
           onPress={() => console.log("Navigate to About Page")} 
         />
-        
-        <SettingItem 
-          icon="chatbubble-ellipses-outline" 
-          title="Feedback" 
-          color="#06B6D4"
-          onPress={() => console.log("Navigate to Feedback Page")} 
-        />
+        </View>
 
+        <View style={styles.section}>
+            <SettingItem 
+            icon="chatbubble-ellipses-outline" 
+            title="Feedback" 
+            color="#06B6D4"
+            onPress={() => console.log("Navigate to Feedback Page")} 
+            />
+        </View>
+
+        <View style={styles.section}>
         <SettingItem 
           icon="share-social-outline" 
           title="Share App" 
