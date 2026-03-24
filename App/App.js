@@ -5,13 +5,73 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingScreen';
+import Lock from '../screens/settings/Lock';
+import SessionScreen from '../screens/settings/Session';
+import EncryptionScreen from '../screens/settings/Encryption';
+import ShareScreen from '../screens/settings/ShareApp';
+import AboutScreen from '../screens/settings/AboutScreen';
+import FeedbackScreen from '../screens/settings/Feedback';
 
 
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function SettingsStack(){
+  return (
+    //Main Settings Tab
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SettingsMain"
+        component = {SettingsScreen}
+        options ={{headerShown:false}}
+      />
+  {/* Lock Screen Page */}
+      <Stack.Screen
+        name="Lock"
+        component = {Lock}
+        options ={{title:"Application Lock" }}
+      />
+
+      {/* // Session Screen Page */}
+      <Stack.Screen
+        name="Session"
+        component = {SessionScreen}
+        options ={{title:"Session" }}
+      />
+
+      {/* // Encryption Screen Page */}
+      <Stack.Screen
+        name="Encryption"
+        component = {EncryptionScreen}
+        options ={{title:"Encryption" }}
+      />
+
+      {/* // Feedback Screen Page */}
+      <Stack.Screen
+        name="Feedback"
+        component = {FeedbackScreen}
+        options ={{title:"Feedback" }}
+      />
+
+      <Stack.Screen
+        name="About"
+        component = {AboutScreen}
+        options ={{title:"About Secure Notes" }}
+      />
+      {/* //Share Screen Page */}
+      <Stack.Screen
+        name="Share"
+        component = {ShareScreen}
+        options ={{title:"Share" }}
+      />
+    </Stack.Navigator>
+  )
+}
 
 export default function App() {
   return (
@@ -38,7 +98,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Settings" component={SettingsStack} />
       </Tab.Navigator>
     </SafeAreaView>
     </NavigationContainer>

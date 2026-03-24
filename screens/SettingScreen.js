@@ -26,7 +26,7 @@ export default function SettingsScreen({ navigation }) {
             icon="lock-closed-outline"
             title="Lock App"
             color='#10B981'
-            onPress={()=> console.log("Navigate to Lock Application Page")}
+            onPress={()=> navigation.navigate("Lock")}
             />
       </View>
       
@@ -35,7 +35,7 @@ export default function SettingsScreen({ navigation }) {
             icon="color-palette-outline"
             title="Session"
             color='#F59E0B'
-            onPress={()=> console.log("Navigate to Session Page")}
+            onPress={()=> navigation.navigate("Session")}
             />
       </View>
 
@@ -44,7 +44,7 @@ export default function SettingsScreen({ navigation }) {
             icon="shield-outline" 
             title="Encryption" 
             color="#6366F1"
-            onPress={() => console.log("Welcome to Encryption")} 
+            onPress={() => navigation.navigate("Encryption")} 
             />
         </View>
 
@@ -53,7 +53,7 @@ export default function SettingsScreen({ navigation }) {
           icon="information-circle-outline" 
           title="About Us" 
           color="#3B82F6"
-          onPress={() => console.log("Navigate to About Page")} 
+          onPress={() => navigation.navigate("About")} 
         />
         </View>
 
@@ -62,7 +62,7 @@ export default function SettingsScreen({ navigation }) {
             icon="chatbubble-ellipses-outline" 
             title="Feedback" 
             color="#06B6D4"
-            onPress={() => console.log("Navigate to Feedback Page")} 
+            onPress={() => navigation.navigate("Feedback")} 
             />
         </View>
 
@@ -71,7 +71,7 @@ export default function SettingsScreen({ navigation }) {
           icon="share-social-outline" 
           title="Share App" 
           color="#8B5CF6"
-          onPress={() => console.log("Open Share Dialog")} 
+          onPress={() => navigation.navigate("Share")} 
         />
       </View>
     </ScrollView>
