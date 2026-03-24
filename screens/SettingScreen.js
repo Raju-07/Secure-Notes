@@ -32,7 +32,7 @@ export default function SettingsScreen({ navigation }) {
       
       <View style={styles.section}>
         <SettingItem
-            icon="color-palette-outline"
+            icon="timer-outline"
             title="Session"
             color='#F59E0B'
             onPress={()=> navigation.navigate("Session")}
