@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { version } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -74,6 +74,12 @@ export default function SettingsScreen({ navigation }) {
           onPress={() => navigation.navigate("Share")} 
         />
       </View>
+
+      <View style={styles.version}>
+          <Text style={styles.text}>Version 1.0.0</Text>
+      </View>
+
+
     </ScrollView>
   );
 }
@@ -123,4 +129,15 @@ const styles = StyleSheet.create({
     color: '#334155',
     fontWeight: '500',
   },
+  version:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    paddingTop:10,
+  },
+  text:{
+    fontSize:16,
+    color:'#334155',
+    fontWeight:500,
+  }
 });
