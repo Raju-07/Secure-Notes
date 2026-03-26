@@ -37,6 +37,7 @@ function SettingsStack(){
         component = {Lock}
         options ={{title:"Application Lock" }}
       />
+      {/* Theme screen Page */}
       <Stack.Screen
         name="Theme"
         component = {AppTheme}
@@ -83,30 +84,31 @@ export default function App() {
   return (
     <NavigationContainer>
       <SafeAreaView style={{flex:1,justifyContent:'center'}}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,           
-          tabBarActiveTintColor: '#000000e5', 
-          tabBarInactiveTintColor: 'gray',   
-          tabBarStyle: { height: 60 },     
-          
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            headerShown: false,           
+            tabBarActiveTintColor: '#000000e5', 
+            tabBarInactiveTintColor: 'gray',   
+            tabBarStyle: { height: 60 },     
+            
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
 
-            if (route.name === 'Home') {
-              iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Settings') {
-              iconName = focused ? 'settings' : 'settings-outline';
-            }
+              if (route.name === 'Home') {
+                iconName = focused ? 'home' : 'home-outline';
+              } else if (route.name === 'Settings') {
+                iconName = focused ? 'settings' : 'settings-outline';
+              }
 
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-      >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsStack} />
-      </Tab.Navigator>
-    </SafeAreaView>
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+          })}>
+          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Settings" component={SettingsStack} />
+        </Tab.Navigator>
+
+
+      </SafeAreaView>
     </NavigationContainer>
   );
 }

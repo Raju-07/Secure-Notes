@@ -1,8 +1,38 @@
-import react from "react";
-import { StyleSheet,View,Text,ScrollView } from "react-native";
+import { use, useRef, useState } from "react";
+import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback } from "react-native";
 
 
 export default function HomeScreen (){
+    const [isModalVisible,setIsModalVisible] = useState(false);
+    const slideAni = useRef(new Animated.Value(0)).current;
+
+
+    // OPEN Modal
+    const openModal = () => {
+        setIsModalVisible(true);
+        Animated.timing(slideAni,{
+            toValue:1,
+            duration:300,
+            easing:Easing.out(Easing.poly(4)),
+            useNativeDriver:true
+        }).start()
+    }
+
+    //CLOSE Modal
+    const closeModal = () => {
+        Animated.timing(slideAni,{
+            toValue:0,
+            duration:250,
+            easing:Easing.in(Easing.poly(4)),
+            useNativeDriver:true
+        }).start(()=> setIsModalVisible(false));
+    }
+
+    const translateY = slideAni.interpolate({
+        inputRange:[0,1],
+        outputRange:[300,0]
+    })
+
     return(
         <View style={styles.container}>
             <Text style={styles.headerText}>
@@ -61,7 +91,34 @@ export default function HomeScreen (){
                     Hello world
                 </Text>
             </ScrollView>
+
+
+            <View style={{margin:'12',alignItems:'center',}}>
+                <Button title='Add item' style={{width:"50%"}} onPress={openModal}/>
+            </View>
+
+            <Modal visible={isModalVisible} transparent animationType="none" onRequestClose={closeModal} >
+
+                <View style={styles.backdrop}>
+                    <TouchableWithoutFeedback onPress={closeModal}>
+                        <View style={styles.backdropTouchable} />
+                    </TouchableWithoutFeedback>
+
+                    <Animated.View style={[
+                        styles.bottomSheet,
+                        {transform:[{translateY}]},
+                    ]}>
+                        <Text>
+                            Hii I'm inside Modal
+                        </Text>
+                        <Button title="Close Modal" onPress={closeModal}/>
+                    </Animated.View>
+                  
+                  </View>
+            </Modal>
+
         </View>
+
     );
 }
 
@@ -112,5 +169,23 @@ const styles = StyleSheet.create({
     paddingTop:30,
     paddingLeft:50,
   },
+  backdrop: {
+  flex: 1,
+  justifyContent: 'flex-end', // align bottom sheet to bottom
+  backgroundColor: 'rgba(0,0,0,0.4)', // dim background
+},
+backdropTouchable: {
+  flex: 1, // fills the area above the sheet so taps close it
+},
+bottomSheet: {
+  backgroundColor: '#F1F5F9',
+  padding: 20,
+  borderTopLeftRadius: 16,
+  borderTopRightRadius: 16,
+  minHeight: 180, // set desired height
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
 });
 
