@@ -1,5 +1,6 @@
-import { use, useRef, useState } from "react";
-import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback } from "react-native";
+import { useRef, useState } from "react";
+import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback,Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function HomeScreen (){
@@ -39,58 +40,15 @@ export default function HomeScreen (){
                 Secure Notes
             </Text>
             <ScrollView style={styles.container}>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Scrollable Items like Cards, and Notes
-                </Text>
-                <Text style={styles.title}>
-                    Hello world
-                </Text>
-                <Text style={styles.title}>
-                    Hello world
-                </Text>
+                
                 <Text style={styles.title}>
                     Hello world
                 </Text>
             </ScrollView>
+
+            <Pressable  style={styles.fab}  android_ripple={{ color: 'rgba(255,255,255,0.2)', radius: 28 }}  onPress={() => setIsModalVisible(true)}  accessibilityLabel="Add item">  
+                <Ionicons name="add" size={28} color="white" />
+            </Pressable>
 
 
             <View style={{margin:'12',alignItems:'center',}}>
@@ -186,6 +144,23 @@ bottomSheet: {
   alignItems: 'center',
   justifyContent: 'center',
 },
+fab: {
+  position: 'absolute',
+  right: 20,
+  bottom: 28,
+  width: 56,
+  height: 56,
+  borderRadius: 28,
+  backgroundColor: '#007AFF', // or your accent color
+  alignItems: 'center',
+  justifyContent: 'center',
+  elevation: 6,              // Android shadow
+  shadowColor: '#000',       // iOS shadow
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+}
+
 
 });
 
