@@ -7,6 +7,16 @@ export default function HomeScreen (){
     const [isModalVisible,setIsModalVisible] = useState(false);
     const slideAni = useRef(new Animated.Value(0)).current;
 
+    // Modal Options
+
+    const options = [
+    {id:'1',name:"Password",icon:'lock-closed-outline'},
+    {id:'2',name:'Notes',icon:'document-text-outline'},
+    {id:'3',name:'Events',icon:'calendar-outline'},
+    {id:'4',name:'PassKey',icon:'key-outline'},
+    {id:'5',name:'Remind',icon:'alarm-outline'}
+    ]
+
 
     // OPEN Modal
     const openModal = () => {
@@ -35,48 +45,55 @@ export default function HomeScreen (){
     })
 
     return(
-        <View style={styles.container}>
-            <Text style={styles.headerText}>
-                Secure Notes
-            </Text>
-            <ScrollView style={styles.container}>
-                
-                <Text style={styles.title}>
-                    Hello world
-                </Text>
-            </ScrollView>
+      <View style={styles.container}>
+      {/* Branding */}
+        <Text style={styles.headerText}>Secure Notes</Text>
 
-            <Pressable  style={styles.fab}  android_ripple={{ color: 'rgba(255,255,255,0.2)', radius: 28 }}  onPress={() => setIsModalVisible(true)}  accessibilityLabel="Add item">  
-                <Ionicons name="add" size={28} color="white" />
-            </Pressable>
+      {/* Screen Content i.e. cards */}
+      {/* Full Home Screen */}
+        <ScrollView style={styles.container}>
+          <Text style={styles.title}>Hello world</Text>
+        </ScrollView>
 
+     {/* Add Button */}
+        <Pressable  style={styles.fab}
+          onPress={() => openModal()}
+          accessibilityLabel="Add item">  
+          <Ionicons name="add" size={28} color="white" />
+          </Pressable>
 
-            <View style={{margin:'12',alignItems:'center',}}>
-                <Button title='Add item' style={{width:"50%"}} onPress={openModal}/>
-            </View>
+      {/* Modal for Add option */}
+        <Modal
+          visible={isModalVisible}
+          transparent
+          onRequestClose={closeModal} >
+          <View style={styles.backdrop}>
+            <TouchableWithoutFeedback onPress={closeModal}>
+              <View style={styles.backdropTouchable} />
+            </TouchableWithoutFeedback>
 
-            <Modal visible={isModalVisible} transparent animationType="none" onRequestClose={closeModal} >
-
-                <View style={styles.backdrop}>
-                    <TouchableWithoutFeedback onPress={closeModal}>
-                        <View style={styles.backdropTouchable} />
-                    </TouchableWithoutFeedback>
-
-                    <Animated.View style={[
-                        styles.bottomSheet,
-                        {transform:[{translateY}]},
-                    ]}>
-                        <Text>
-                            Hii I'm inside Modal
-                        </Text>
-                        <Button title="Close Modal" onPress={closeModal}/>
-                    </Animated.View>
-                  
-                  </View>
-            </Modal>
-
-        </View>
-
+            <Animated.View style={[
+              styles.bottomSheet,
+              {transform:[{translateY}]},
+              ]}>
+                <View style={styles.grid} >
+                  {
+                    options.map(option => (
+                      <Pressable 
+                        key={option.id}
+                        style={styles.cell}
+                        onPress={()=> console.log("pressed",option.name)}>
+                          <Ionicons name={option.icon} size={36} color="#072e58"/>
+                          <Text style={styles.label}> {option.name} </Text>
+                      </Pressable>
+                        ))
+                      }
+                </View>
+            </Animated.View>
+                    
+          </View>
+        </Modal>
+      </View>
     );
 }
 
@@ -140,7 +157,7 @@ bottomSheet: {
   padding: 20,
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
-  minHeight: 180, // set desired height
+  minHeight: 220, // set desired height
   alignItems: 'center',
   justifyContent: 'center',
 },
@@ -148,10 +165,10 @@ fab: {
   position: 'absolute',
   right: 20,
   bottom: 28,
-  width: 56,
-  height: 56,
-  borderRadius: 28,
-  backgroundColor: '#007AFF', // or your accent color
+  width: 65,
+  height: 52,
+  borderRadius: 10,
+  backgroundColor: '#072e58', // or your accent color
   alignItems: 'center',
   justifyContent: 'center',
   elevation: 6,              // Android shadow
@@ -159,6 +176,23 @@ fab: {
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.25,
   shadowRadius: 4,
+},
+grid:{
+  flexDirection:'row',
+  flexWrap:'wrap',
+  marginHorizontal:12
+},
+
+cell:{
+  width:'33.3333%',
+  alignItems:'center',
+  padding:12
+},
+
+label:{
+  marginTop:8,
+  fontSize:14,
+  color:"#334155"
 }
 
 

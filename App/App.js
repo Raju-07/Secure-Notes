@@ -27,7 +27,7 @@ function SettingsStack(){
     //Main Settings Tab
     <Stack.Navigator>
       <Stack.Screen
-        name="Settings"
+        name="Setting"
         component = {SettingsScreen}
         options ={{headerShown:false}}
       />
