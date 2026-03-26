@@ -29,6 +29,14 @@ export default function SettingsScreen({ navigation }) {
             onPress={()=> navigation.navigate("Lock")}
             />
       </View>
+      <View style={styles.section}>
+        <SettingItem
+            icon="color-palette-outline"
+            title="Theme"
+            color='#ff00aa'
+            onPress={()=> navigation.navigate("Theme")}
+            />
+      </View>
       
       <View style={styles.section}>
         <SettingItem

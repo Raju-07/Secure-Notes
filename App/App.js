@@ -15,6 +15,7 @@ import EncryptionScreen from '../screens/settings/Encryption';
 import ShareScreen from '../screens/settings/ShareApp';
 import AboutScreen from '../screens/settings/AboutScreen';
 import FeedbackScreen from '../screens/settings/Feedback';
+import AppTheme from '../screens/settings/Theme';
 
 
 
@@ -26,7 +27,7 @@ function SettingsStack(){
     //Main Settings Tab
     <Stack.Navigator>
       <Stack.Screen
-        name="SettingsMain"
+        name="Settings"
         component = {SettingsScreen}
         options ={{headerShown:false}}
       />
@@ -35,6 +36,11 @@ function SettingsStack(){
         name="Lock"
         component = {Lock}
         options ={{title:"Application Lock" }}
+      />
+      <Stack.Screen
+        name="Theme"
+        component = {AppTheme}
+        options ={{title:"Theme" }}
       />
 
       {/* // Session Screen Page */}
