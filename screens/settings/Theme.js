@@ -34,7 +34,10 @@ export default function AppTheme(){
                         System
                     </Text>
                 </View>
-                <Switch value={isLocked} onValueChange={toggleLock}/>
+                <Switch 
+                thumbColor={ isLocked ?'pink':'white'} 
+                trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
+                value={isLocked} onValueChange={toggleLock}/>
             </View>
 
 
@@ -50,7 +53,11 @@ export default function AppTheme(){
                 </Text>
                 </View>
                 
-               <Switch value={isLocked} onValueChange={toggleLock}/>
+               <Switch 
+                thumbColor={ isLocked ?'pink':'white'} 
+                trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
+               value={isLocked} 
+               onValueChange={toggleLock}/>
             </View>
 
             <View style={styles.header}>
@@ -61,20 +68,27 @@ export default function AppTheme(){
                     </Text>
                 </View>
 
-               <Switch value={isLightLock} onValueChange={toggleLight}/>
+               <Switch 
+                thumbColor={ isLightLock ?'pink':'white'} 
+               trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
+               value={isLightLock} 
+               onValueChange={toggleLight}/>
             </View>
             
             <View style={styles.header}>
                 <View style={styles.together}>
-                <Ionicons name="moon-outline" size={30} />
-                <Text style={styles.option}>
-                    Dark Theme
-                </Text>
+                    <Ionicons name="moon-outline" size={30} />
+                    <Text style={styles.option}>
+                        Dark Theme
+                    </Text>
+                </View>
 
-                 </View>
-               <Switch value={isDarkLock} onValueChange={toogleDark}/>
+                <Switch 
+                    thumbColor={ isDarkLock ?'pink':'white'} 
+                    trackColor={{false:'#d7c6c6',true:'#d6aad6'}} 
+                    value={isDarkLock} 
+                    onValueChange={toogleDark}/>
             </View>
-
 
         </View>
 )}
