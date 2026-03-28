@@ -3,9 +3,9 @@
     "name": "Secure Notes", 
     "slug": "Secure-Notes",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "automatic",
     "icon": "assets/_Shield_Logo.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain", 
