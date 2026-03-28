@@ -1,9 +1,11 @@
-import React, { version } from 'react';
+import React, { useContext, version } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function SettingsScreen({ navigation }) {
+  const { colors } = useContext(ThemeContext);
   
   // Reusable Setting Row Component
   const SettingItem = ({ icon, title, onPress, color = "#475569" }) => (
@@ -20,10 +22,10 @@ export default function SettingsScreen({ navigation }) {
 
   return (
 
-    <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Settings</Text>
+    <ScrollView style={[styles.container,{backgroundColor:colors.background}]}>
+      <Text style={[styles.headerText,{color:colors.text}]}>Settings</Text>
 
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="lock-closed-outline"
             title="Lock App"
@@ -31,7 +33,7 @@ export default function SettingsScreen({ navigation }) {
             onPress={()=> navigation.navigate("Lock")}
             />
       </View>
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="color-palette-outline"
             title="Theme"
@@ -40,7 +42,7 @@ export default function SettingsScreen({ navigation }) {
             />
       </View>
       
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="timer-outline"
             title="Session"
@@ -49,7 +51,7 @@ export default function SettingsScreen({ navigation }) {
             />
       </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
             icon="shield-outline" 
             title="Encryption" 
@@ -58,7 +60,7 @@ export default function SettingsScreen({ navigation }) {
             />
         </View>
 
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
           icon="information-circle-outline" 
           title="About Us" 
@@ -67,7 +69,7 @@ export default function SettingsScreen({ navigation }) {
         />
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
             <SettingItem 
             icon="chatbubble-ellipses-outline" 
             title="Feedback" 
@@ -76,7 +78,7 @@ export default function SettingsScreen({ navigation }) {
             />
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
           icon="share-social-outline" 
           title="Share App" 
@@ -96,7 +98,7 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: colors.background,
     paddingTop: 60,
   },
   headerText: {
@@ -107,10 +109,10 @@ const styles = StyleSheet.create({
     color: '#1E293B',
   },
   section: {
-    backgroundColor: '#FFF',
+    backgroundColor: colors.card,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: colors.borderColor,
   },
   item: {
     flexDirection: 'row',
