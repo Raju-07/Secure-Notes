@@ -14,7 +14,7 @@ export default function SettingsScreen({ navigation }) {
         <View style={[styles.iconContainer, { backgroundColor: color + '15' }]}>
           <Ionicons name={icon} size={22} color={color} />
         </View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title,{color:colors.text}]}>{title}</Text>
       </View>
       <Ionicons name="chevron-forward" size={20} color="#CBD5E1" />
     </TouchableOpacity>
@@ -88,7 +88,7 @@ export default function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.version}>
-          <Text style={styles.text}> {Constants.expoConfig.version} </Text>
+          <Text style={[styles.text,{color:colors.text}]}> {Constants.expoConfig.version} </Text>
       </View>
 
     </ScrollView>
@@ -98,7 +98,6 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     paddingTop: 60,
   },
   headerText: {
@@ -109,10 +108,12 @@ const styles = StyleSheet.create({
     color: '#1E293B',
   },
   section: {
-    backgroundColor: colors.card,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: colors.borderColor,
+    borderRadius:10,
+    marginLeft:12,
+    marginRight:12,
+    marginBottom:3,
   },
   item: {
     flexDirection: 'row',
@@ -120,8 +121,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+
+    borderBottomColor: '#0e0e0f',
   },
   leftSection: {
     flexDirection: 'row',
