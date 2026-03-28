@@ -96,25 +96,26 @@ export default function AppTheme(){
 const styles = StyleSheet.create({
     container:{flex:1},
     title:{
-        fontSize:25,
+        fontSize:20,
         fontWeight:600,
         margin:20,},
+
     header:{
         flexDirection:'row',
         justifyContent:'space-between',
         marginLeft:20,
         marginTop:8,
         marginRight:20,
-        padding:10,
+        padding:5,
         alignItems:"center",
         backgroundColor:'#6cc2ad18',
         borderRadius:15,
     },
 
     option:{
-        fontSize:20,
+        fontSize:16,
         margin:20,
-        fontWeight:400, 
+        fontWeight:500, 
     },
 
     together:{
