@@ -14,6 +14,7 @@ import ShareScreen from '../screens/settings/ShareApp';
 import AboutScreen from '../screens/settings/AboutScreen';
 import FeedbackScreen from '../screens/settings/Feedback';
 import AppTheme from '../screens/settings/Theme';
+import { ThemeProvider } from '../context/ThemeContext';  // imported Theme Provider
 
 
 
@@ -80,42 +81,35 @@ function SettingsStack(){
 
 export default function App() {
   return (
+    <ThemeProvider>
     <NavigationContainer>
-      <SafeAreaView style={{flex:1,justifyContent:'center'}}>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: false,           
-            tabBarActiveTintColor: '#000000e5', 
-            tabBarInactiveTintColor: 'gray',   
-            tabBarStyle: { height: 60 },     
-            
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+        <SafeAreaView style={{flex:1,justifyContent:'center'}}>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              headerShown: false,           
+              tabBarActiveTintColor: '#000000e5', 
+              tabBarInactiveTintColor: 'gray',   
+              tabBarStyle: { height: 60,},     
+              
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-              if (route.name === 'Home') {
-                iconName = focused ? 'home' : 'home-outline';
-              } else if (route.name === 'Settings') {
-                iconName = focused ? 'settings' : 'settings-outline';
-              }
+                if (route.name === 'Home') {
+                  iconName = focused ? 'home' : 'home-outline';
+                } else if (route.name === 'Settings') {
+                  iconName = focused ? 'settings' : 'settings-outline';
+                }
 
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-          })}>
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Settings" component={SettingsStack} />
-        </Tab.Navigator>
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+            })}>
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Settings" component={SettingsStack} />
+          </Tab.Navigator>
 
-
-      </SafeAreaView>
-    </NavigationContainer>
+        </SafeAreaView>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#e6e6e6',
-  },
-});
