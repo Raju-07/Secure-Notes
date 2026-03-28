@@ -1,12 +1,13 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback,Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from '../context/ThemeContext';  // imported Theme Provider
 
 
 export default function HomeScreen (){
     const [isModalVisible,setIsModalVisible] = useState(false);
     const slideAni = useRef(new Animated.Value(0)).current;
-
+    const { colors } = useContext(ThemeContext);
     // Modal Options
 
     const options = [
@@ -14,7 +15,8 @@ export default function HomeScreen (){
     {id:'2',name:'Notes',icon:'document-text-outline'},
     {id:'3',name:'Events',icon:'calendar-outline'},
     {id:'4',name:'PassKey',icon:'key-outline'},
-    {id:'5',name:'Remind',icon:'alarm-outline'}
+    {id:'5',name:'Remind',icon:'alarm-outline'},
+    {id:'6',name:'Photo',icon:'image'},
     ]
 
 
@@ -45,21 +47,21 @@ export default function HomeScreen (){
     })
 
     return(
-      <View style={styles.container}>
+      <View style={[styles.container,{backgroundColor:colors.background}]}>
       {/* Branding */}
-        <Text style={styles.headerText}>Secure Notes</Text>
+        <Text style={[styles.headerText,{color:colors.text}]}>Secure Notes</Text>
 
       {/* Screen Content i.e. cards */}
       {/* Full Home Screen */}
         <ScrollView style={styles.container}>
-          <Text style={styles.title}>Hello world</Text>
+          <Text style={[styles.title,{color:colors.text}]}>Hello world</Text>
         </ScrollView>
 
      {/* Add Button */}
-        <Pressable  style={styles.fab}
+        <Pressable  style={[styles.fab,{backgroundColor:colors.button}]}
           onPress={() => openModal()}
           accessibilityLabel="Add item">  
-          <Ionicons name="add" size={28} color="white" />
+          <Ionicons name="add" size={28} color={colors.icon} />
           </Pressable>
 
       {/* Modal for Add option */}
@@ -73,7 +75,7 @@ export default function HomeScreen (){
             </TouchableWithoutFeedback>
 
             <Animated.View style={[
-              styles.bottomSheet,
+              styles.bottomSheet,{backgroundColor:colors.bottomSheet},
               {transform:[{translateY}]},
               ]}>
                 <View style={styles.grid} >
@@ -83,8 +85,8 @@ export default function HomeScreen (){
                         key={option.id}
                         style={styles.cell}
                         onPress={()=> console.log("pressed",option.name)}>
-                          <Ionicons name={option.icon} size={36} color="#072e58"/>
-                          <Text style={styles.label}> {option.name} </Text>
+                          <Ionicons name={option.icon} size={36} color={colors.icon}/>
+                          <Text style={[styles.label,{color:colors.text}]}> {option.name} </Text>
                       </Pressable>
                         ))
                       }
@@ -100,8 +102,7 @@ export default function HomeScreen (){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-    paddingTop: 60,
+    paddingTop: 20,
   },
   headerText: {
     fontSize: 28,
@@ -147,13 +148,12 @@ const styles = StyleSheet.create({
   backdrop: {
   flex: 1,
   justifyContent: 'flex-end', // align bottom sheet to bottom
-  backgroundColor: 'rgba(0,0,0,0.4)', // dim background
+  backgroundColor: 'rgba(0, 0, 0, 0.17)', // dim background
 },
 backdropTouchable: {
   flex: 1, // fills the area above the sheet so taps close it
 },
 bottomSheet: {
-  backgroundColor: '#F1F5F9',
   padding: 20,
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
@@ -191,8 +191,7 @@ cell:{
 
 label:{
   marginTop:8,
-  fontSize:14,
-  color:"#334155"
+  fontSize:12,
 }
 
 
