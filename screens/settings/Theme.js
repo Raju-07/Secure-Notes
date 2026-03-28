@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { View,Text,StyleSheet,Pressable,Switch } from "react-native";
+import { View,Text,StyleSheet,Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function AppTheme(){
-    const [IsSystem,setIsSystem] = useState(false);
+    const [IsSystem,setIsSystem] = useState(true);
     const [IsLight,setIsLight]= useState(false);
     const [IsDark,setIsDark]= useState(false);
 
