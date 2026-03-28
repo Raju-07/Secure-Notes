@@ -1,6 +1,7 @@
 import React, { version } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from "expo-constants";
 
 export default function SettingsScreen({ navigation }) {
   
@@ -18,6 +19,7 @@ export default function SettingsScreen({ navigation }) {
   );
 
   return (
+
     <ScrollView style={styles.container}>
       <Text style={styles.headerText}>Settings</Text>
 
@@ -84,9 +86,8 @@ export default function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.version}>
-          <Text style={styles.text}>Version 1.0.0</Text>
+          <Text style={styles.text}> {Constants.expoConfig.version} </Text>
       </View>
-
 
     </ScrollView>
   );
