@@ -3,21 +3,27 @@ import { View,Text,StyleSheet,Pressable,Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function AppTheme(){
-    const [isLocked,setIsLocked] = useState(false);
-    const [isLightLock,setIsLightLock]= useState(false);
-    const [isDarkLock,setIsDarkLock]= useState(false);
+    const [IsSystem,setIsSystem] = useState(false);
+    const [IsLight,setIsLight]= useState(false);
+    const [IsDark,setIsDark]= useState(false);
 
 
     const toggleLock = ()=>{
-        setIsLocked(!isLocked);
+        setIsSystem(!IsSystem);
+        setIsLight(false);
+        setIsDark(false);
     };
 
     const toggleLight =()=>{
-        setIsLightLock(!isLightLock);
+        setIsLight(!IsLight);
+        setIsDark(false);
+        setIsSystem(false);
     };
 
     const toogleDark= () =>{
-          setIsDarkLock(!isDarkLock);
+          setIsDark(!IsDark);
+          setIsLight(false);
+          setIsSystem(false);
     };
     
 
@@ -28,16 +34,19 @@ export default function AppTheme(){
             </Text>
 
             <View style={styles.header}>
-                <View style={styles.together}>
-                    <Ionicons name="cog-outline" size={30} />
+                <View style={styles.together}>      
+                    <Ionicons name={IsSystem ? 'cog-outline': IsLight ? 'sunny-outline' : 'moon-outline'} size={30} />
                     <Text style={styles.option}>
-                        System
+                        {IsSystem ? 'System' : IsLight ? 'Light Theme' : 'Dark Theme'}
                     </Text>
                 </View>
                 <Switch 
-                thumbColor={ isLocked ?'pink':'white'} 
+                thumbColor={ true ? 'pink':'white'} 
                 trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
-                value={isLocked} onValueChange={toggleLock}/>
+                value={true} 
+                onValueChange={toggleLock}
+                disabled
+                />
             </View>
 
 
@@ -54,10 +63,12 @@ export default function AppTheme(){
                 </View>
                 
                <Switch 
-                thumbColor={ isLocked ?'pink':'white'} 
+                thumbColor={ IsSystem ?'pink':'white'} 
                 trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
-               value={isLocked} 
-               onValueChange={toggleLock}/>
+               value={IsSystem} 
+               onValueChange={toggleLock}
+               disabled={IsSystem}/>
+
             </View>
 
             <View style={styles.header}>
@@ -69,10 +80,12 @@ export default function AppTheme(){
                 </View>
 
                <Switch 
-                thumbColor={ isLightLock ?'pink':'white'} 
+                thumbColor={ IsLight ?'pink':'white'} 
                trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
-               value={isLightLock} 
-               onValueChange={toggleLight}/>
+               value={IsLight} 
+               onValueChange={toggleLight}
+               disabled={IsLight}   
+               />
             </View>
             
             <View style={styles.header}>
@@ -84,10 +97,13 @@ export default function AppTheme(){
                 </View>
 
                 <Switch 
-                    thumbColor={ isDarkLock ?'pink':'white'} 
+                    thumbColor={ IsDark ?'pink':'white'} 
                     trackColor={{false:'#d7c6c6',true:'#d6aad6'}} 
-                    value={isDarkLock} 
-                    onValueChange={toogleDark}/>
+                    value={IsDark} 
+                    onValueChange={toogleDark}
+                    disabled={IsDark}
+                    />
+
             </View>
 
         </View>
