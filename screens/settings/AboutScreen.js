@@ -1,57 +1,61 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from "@expo/vector-icons/";
+import { ThemeContext } from '../../context/ThemeContext';
+import { useContext } from 'react';
 
 export default function AboutScreen() {
+  const {colors} = useContext(ThemeContext);
+  
   return (
           
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container,{backgroundColor:colors.background}]}>
 
-      /* Header Cards*/
-      <View style={styles.card}>
-      <Text style={styles.title}>App Name : Secure Notes</Text>
-      <Text style={styles.tag}>Tagline : "Your Privacy ,Your Control"</Text>
+    {/* Header Cards*/ }
+      <View style={[styles.card,{backgroundColor:colors.card}]}>
+      <Text style={[styles.title,{color:colors.text}]}>App Name : Secure Notes</Text>
+      <Text style={[styles.tag,{color:colors.textMuted}]}>Tagline : "Your Privacy ,Your Control"</Text>
 
       </View>
      
      {/* App Description*/}
-      <View style={styles.card}>
-        <Text style={styles.heading}>About App </Text>
-        <Text style={styles.detail}>
+      <View style={[styles.card,{backgroundColor:colors.card}]}>
+        <Text style={[styles.heading,{color:colors.text}]}>About App </Text>
+        <Text style={[styles.detail,{color:colors.textMuted}]}>
           Secure notes is a private note-taking app where your data stays safe and protected with password and security.</Text>
       </View>
 
 
     {/* Add Features */}
-      <View style={styles. card}>
-      <Text style={styles.heading}> Features</Text>
+      <View style={[styles. card,{backgroundColor:colors.card}]}>
+      <Text style={[styles.heading,{color:colors.text}]}> Features</Text>
   
-        <Text style={styles. feature}><Ionicons name="lock-closed" size={18} color='#060605'/> Password & Protected Notes</Text>
-        <Text style={styles. feature}><Ionicons name="brush" size={15} color="#070606"/> Simple & Clean UI</Text>
-        <Text style={styles. feature}><Ionicons name="flash-sharp" size={15} color="#0f0f0d"/> Fast and LightWeight</Text> 
+        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="lock-closed" size={18} color={colors.icon}/> Password & Protected Notes</Text>
+        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="brush" size={15} color={colors.icon}/> Simple & Clean UI</Text>
+        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="flash-sharp" size={15} color={colors.icon}/> Fast and LightWeight</Text> 
       </View>
 
      {/* Developer Info */}
-    <View style={styles.card}>
-      <Text style={styles.heading}>Developers</Text>
+    <View style={[styles.card,{backgroundColor:colors.card}]}>
+      <Text style={[styles.heading,{color:colors.text}]}>Developers</Text>
 
-      <Text style={styles.name}>Name : Raju Yadav</Text> 
-      <Text style={styles.role}>Role : App Developer</Text>
+      <Text style={[styles.name,{color:colors.text}]}>Name : Raju Yadav</Text> 
+      <Text style={[styles.role,{color:colors.textMuted}]}>Role : App Developer</Text>
 
-      <Text style={styles.name}>Name : Raja Singh Rajput </Text>
-      <Text style={styles.role}>Role : UX Desginer </Text>  
+      <Text style={[styles.name,{color:colors.text}]}>Name : Raja Singh Rajput </Text>
+      <Text style={[styles.role,{color:colors.textMuted}]}>Role : UX Desginer </Text>  
  
-      <Text style={styles.name}>Name : Prachi Jaswal</Text>
-      <Text style={styles.role}>Role : UI/UX Designer</Text>
+      <Text style={[styles.name,{color:colors.text}]}>Name : Prachi Jaswal</Text>
+      <Text style={[styles.role,{color:colors.textMuted}]}>Role : UI/UX Designer</Text>
     </View>
 
     {/* App info */}
-    <View style={styles.app}>
-      <Text style={styles.heading}>App Info</Text>
-      <Text style={styles.detail}>Version : 1.0.0</Text>
+    <View style={[styles.app,{backgroundColor:colors.card}]}>
+      <Text style={[styles.heading,{color:colors.text}]}>App Info</Text>
+      <Text style={[styles.detail,{color:colors.textMuted}]}>Version : 1.0.0</Text>
     </View>
 
     {/* Footer */}
-      <Text style={styles.footer}>Thank you for using Secure Notes ❤️</Text>
+      <Text style={[styles.footer,{color:colors.text}]}>Thank you for using Secure Notes ❤️</Text>
     </ScrollView>
   );
 }
