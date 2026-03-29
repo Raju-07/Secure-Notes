@@ -18,30 +18,6 @@ export default function AppTheme(){
     return(
         <View style={[styles.container,{backgroundColor:colors.background}]}>
             <Text style={[styles.title,{color:colors.text}]}>
-                Current Theme
-            </Text>
-
-            <View style={[styles.header,{backgroundColor:colors.card}]}>
-                <View style={styles.together}>      
-                    <Ionicons
-                     name={IsSystem ? 'cog-outline': IsLight ? 'sunny-outline' : 'moon-outline'}
-                     size={30} 
-                     color={colors.text}
-                    />
-                    <Text style={[styles.option,{color:colors.text}]}>
-                        {IsSystem ? 'System' : IsLight ? 'Light Theme' : 'Dark Theme'}
-                    </Text>
-                </View>
-                <Switch 
-                thumbColor={ 'pink'} 
-                trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
-                value={true} 
-                disabled
-                />
-            </View>
-
-
-            <Text style={[styles.title,{color:colors.text}]}>
                 Select Theme
             </Text>
 
@@ -52,8 +28,8 @@ export default function AppTheme(){
                 </View>
                 
                <Switch 
-                thumbColor={ IsSystem ?'pink':'white'} 
-                trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
+                thumbColor={ IsSystem ? colors.primary : '#f4f3f4'} 
+                trackColor={{false:'#767577',true: colors.primary + "50"}}
                value={IsSystem} 
                onValueChange={toggleSystem}
                disabled={IsSystem}/>
@@ -69,8 +45,8 @@ export default function AppTheme(){
                 </View>
 
                <Switch 
-                thumbColor={ IsLight ?'pink':'white'} 
-               trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
+                thumbColor={ IsLight ? colors.primary : '#f4f3f4'} 
+               trackColor={{false:'#767577',true : colors.primary + "50"}}
                value={IsLight} 
                onValueChange={toggleLight}
                disabled={IsLight}   
@@ -84,8 +60,8 @@ export default function AppTheme(){
                 </View>
 
                 <Switch 
-                    thumbColor={ IsDark ?'pink':'white'} 
-                    trackColor={{false:'#d7c6c6',true:'#d6aad6'}} 
+                    thumbColor={ IsDark ? colors.primary : '#f4f3f4'} 
+                    trackColor={{false:'#767577',true:colors.primary + "50"}} 
                     value={IsDark} 
                     onValueChange={toggleDark}
                     disabled={IsDark}
