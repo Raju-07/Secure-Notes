@@ -1,222 +1,103 @@
 import { useContext, useRef, useState } from "react";
-import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback,Pressable, Platform } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Modal, Animated, Easing, TouchableWithoutFeedback, Pressable, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemeContext } from '../context/ThemeContext';  // imported Theme Provider
+import { ThemeContext } from '../context/ThemeContext';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur"; // Blue view import
+import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 
+export default function HomeScreen() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const slideAni = useRef(new Animated.Value(0)).current;
+  const { colors, activeTheme } = useContext(ThemeContext);
 
-export default function HomeScreen (){
-    const [isModalVisible,setIsModalVisible] = useState(false);
-    const slideAni = useRef(new Animated.Value(0)).current;
-    const { colors ,activeTheme} = useContext(ThemeContext);
-    // Modal Options
+  const options = [
+    { id: '1', name: "Password", icon: 'lock-closed-outline' },
+    { id: '2', name: 'Notes', icon: 'document-text-outline' },
+    { id: '3', name: 'Events', icon: 'calendar-outline' },
+    { id: '4', name: 'PassKey', icon: 'key-outline' },
+    { id: '5', name: 'Remind', icon: 'alarm-outline' },
+    { id: '6', name: 'Photo', icon: 'image' },
+  ];
 
-    const options = [
-    {id:'1',name:"Password",icon:'lock-closed-outline'},
-    {id:'2',name:'Notes',icon:'document-text-outline'},
-    {id:'3',name:'Events',icon:'calendar-outline'},
-    {id:'4',name:'PassKey',icon:'key-outline'},
-    {id:'5',name:'Remind',icon:'alarm-outline'},
-    {id:'6',name:'Photo',icon:'image'},
-    ]
-
-
-    // OPEN Modal
-    const openModal = () => {
-      setIsModalVisible(true);
-      Animated.spring(slideAni, {
-          toValue: 1,
-          friction: 8, 
-          tension: 40,
-          useNativeDriver: true,
-      }).start();
-      if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  const openModal = () => {
+    setIsModalVisible(true);
+    Animated.spring(slideAni, { toValue: 1, friction: 8, tension: 40, useNativeDriver: true }).start();
+    if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
-//close Modal
   const closeModal = () => {
-      Animated.timing(slideAni, {
-          toValue: 0,
-          duration: 250,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-      }).start(() => setIsModalVisible(false));
+    Animated.timing(slideAni, { toValue: 0, duration: 250, easing: Easing.in(Easing.ease), useNativeDriver: true }).start(() => setIsModalVisible(false));
   };
 
-    const translateY = slideAni.interpolate({
-      inputRange:[0,1],
-        outputRange:[300,0]
-    })
+  const translateY = slideAni.interpolate({ inputRange: [0, 1], outputRange: [300, 0] });
 
-    return(
-      <View style={[styles.container,{backgroundColor:colors.background}]}>
-        <SafeAreaView>
-          {/* Branding */}
-          <Text style={[styles.headerText,{color:colors.text}]}>Secure Notes</Text>
+  return (
+    <View style={[styles.main, { backgroundColor: colors.background }]}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Text style={[styles.headerText, { color: colors.text }]}>Secure Notes</Text>
 
-          {/* Screen Content i.e. cards */}
-          {/* Full Home Screen */}
-          <ScrollView style={styles.container}>
-            <Text style={[styles.title,{color:colors.text}]}>Hello world</Text>
-          </ScrollView>
-        </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.scrollBody}>
+          {[1, 2, 3].map((item) => (
+            <View key={item} style={[styles.card, { backgroundColor: colors.card }]}>
+              <View style={[styles.iconBox, { backgroundColor: colors.primary + '20' }]}>
+                <Ionicons name="document-text" size={24} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.cardTitle, { color: colors.text }]}>Note Title {item}</Text>
+                <Text style={{ color: colors.text + '80', fontSize: 13 }}>Tap to view encrypted content</Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
 
-        {/* Add Button */}
-        <Pressable
-          style={[styles.fab,{backgroundColor:colors.button}]}
-          onPress={() => openModal()}
-          accessibilityLabel="Add item">  
-          <Ionicons name="add" size={28} color={colors.icon} />
-        </Pressable>
+      <Pressable style={[styles.fab, { backgroundColor: colors.primary }]} onPress={openModal}>
+        <Ionicons name="add" size={30} color="white" />
+      </Pressable>
 
-        {/* Modal for Add option */}
-        <Modal
-          visible={isModalVisible}
-          transparent
-          animationType="none"
-          onRequestClose={closeModal} >
-
-          <View style={styles.backdrop}>
-            <TouchableWithoutFeedback onPress={closeModal}>
-              <View style={styles.backdropTouchable} />
-            </TouchableWithoutFeedback>
-
-            <Animated.View style={[
-              styles.bottomSheet,{backgroundColor:colors.bottomSheet},
-              {transform:[{translateY}]},
-              Platform.OS === 'android' && {backgroundColor:colors.card}
-              ]}>
-
-              {/* iOS GLASS EFFECT */}
-              {Platform.OS === 'ios' && (
-                <BlurView
-                  intensity={80}
-                  tint={activeTheme === 'dark' ? 'dark' : 'light'}
-                  style={StyleSheet.absoluteFill} />
-              )}
-
-                <View style={styles.grid} >
-                  {
-                    options.map(option => (
-                      <Pressable 
-                        key={option.id}
-                        android_ripple={{ color: colors.primary + '33', borderless: true }}
-                        style={({ pressed }) => 
-                        [styles.cell,{opacity: pressed ? 0.5 : 1}
-                          
-                        ]}
-                        
-                        onPress={()=> console.log("pressed",option.name)}>
-                          <Ionicons name={option.icon} size={36} color={colors.icon}/>
-                          <Text style={[styles.label,{color:colors.text}]}> {option.name} </Text>
-                      </Pressable>
-                        ))
-                      }
-                </View>
-            </Animated.View>
-                    
-          </View>
-        </Modal>
-      </View>
-    );
+      <Modal visible={isModalVisible} transparent animationType="none" onRequestClose={closeModal}>
+        <View style={styles.backdrop}>
+          <TouchableWithoutFeedback onPress={closeModal}><View style={styles.backdropTouchable} /></TouchableWithoutFeedback>
+          <Animated.View style={[styles.bottomSheet, { transform: [{ translateY }] }, Platform.OS === 'android' && { backgroundColor: colors.card }]}>
+            {Platform.OS === 'ios' && <BlurView intensity={80} tint={activeTheme} style={StyleSheet.absoluteFill} />}
+            <View style={styles.grid}>
+              {options.map(o => (
+                <Pressable key={o.id} android_ripple={{ color: colors.primary + '33' }} style={({ pressed }) => [styles.cell, { opacity: pressed ? 0.5 : 1 }]} onPress={closeModal}>
+                  <Ionicons name={o.icon} size={32} color={colors.primary} />
+                  <Text style={[styles.label, { color: colors.text }]}>{o.name}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-  headerText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    color: '#1E293B',
-  },
-  section: {
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#F1F5F9',
-  },
-  item: {
+  main: { flex: 1 },
+  headerText: { fontSize: 28, fontWeight: 'bold', marginHorizontal: 20, marginTop: 10, marginBottom: 20 },
+  scrollBody: { paddingHorizontal: 20, paddingBottom: 100 },
+  card: {
     flexDirection: 'row',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
   },
-  leftSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  title: {
-    fontSize: 16,
-    color: '#334155',
-    fontWeight: '500',
-    paddingTop:30,
-    paddingLeft:50,
-  },
-  backdrop: {
-  flex: 1,
-  justifyContent: 'flex-end', // align bottom sheet to bottom
-  backgroundColor: 'rgba(0, 0, 0, 0.17)', // dim background
-},
-backdropTouchable: {
-  flex: 1, // fills the area above the sheet so taps close it
-},
-bottomSheet: {
-  padding: 20,
-  borderTopLeftRadius: 16,
-  borderTopRightRadius: 16,
-  minHeight: 220, // set desired height
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-fab: {
-  position: 'absolute',
-  right: 20,
-  bottom: 28,
-  width: 65,
-  height: 52,
-  borderRadius: 10,
-  alignItems: 'center',
-  justifyContent: 'center',
-  elevation: 6,              // Android shadow
-  shadowColor: '#000',       // iOS shadow
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,
-},
-grid:{
-  flexDirection:'row',
-  flexWrap:'wrap',
-  marginHorizontal:12
-},
-
-cell:{
-  width:'33.3333%',
-  alignItems:'center',
-  padding:12
-},
-
-label:{
-  marginTop:8,
-  fontSize:12,
-}
-
-
+  iconBox: { width: 45, height: 45, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  cardTitle: { fontSize: 16, fontWeight: '600' },
+  fab: { position: 'absolute', right: 30, bottom: 30, width: 60, height: 55, borderRadius: 8, alignItems: 'center', justifyContent: 'center', elevation: 5 },
+  backdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.3)' },
+  backdropTouchable: { flex: 1 },
+  bottomSheet: { padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, minHeight: 250, overflow: 'hidden' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap' },
+  cell: { width: '33.33%', alignItems: 'center', padding: 15 },
+  label: { marginTop: 8, fontSize: 12, fontWeight: '500' }
 });
-

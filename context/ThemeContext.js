@@ -33,22 +33,22 @@ export const ThemeProvider = ({ children }) => {
 
     const colors = {
     // Layout
-    background: activeTheme === 'dark' ? '#0F172A' : '#e6eaed',
-    card: activeTheme === 'dark' ? '#223450' : '#F1F5F9',
+    background: activeTheme === 'dark' ? '#0F172A' : '#F1F5F9', 
+    card: activeTheme === 'dark' ? '#1E293B' : '#FFFFFF',       
     
     // Typography
-    text: activeTheme === 'dark' ? '#F8FAFC' : '#1E293B',
-    textMuted: activeTheme === 'dark' ? '#94A3B8' : '#64748B',
-    //Add Button 
-    button: activeTheme === 'dark' ? '#072e58' : '#F1F5F9',
-    icon : activeTheme === 'dark' ? '#F1F5F9' : '#072e58',
+    text: activeTheme === 'dark' ? '#F8FAFC' : '#1E293B',       
+    textMuted: activeTheme === 'dark' ? '#94A3B8' : '#64748B',  
+    
+    // Buttons & Icons
+    button: activeTheme === 'dark' ? '#334155' : '#1E293B',     
+    icon: activeTheme === 'dark' ? '#F8FAFC' : '#FFFFFF',  
 
-    //Modal 
-    bottomSheet : activeTheme === 'dark' ? '#1e2b49' : '#e6eaed',
-    // Actions & Branding
-    primary: activeTheme === 'dark' ? '#818CF8' : '#6366F1',
-    success: activeTheme === 'dark' ? '#34D399' : '#10B981',
-    borderColor: activeTheme === 'dark' ? '#334155' : '#E2E8F0',
+    bottomSheet: activeTheme === 'dark' ? '#1E293B' : '#FFFFFF',
+
+    primary: activeTheme === 'dark' ? '#818CF8' : '#4F46E5',    
+    success: activeTheme === 'dark' ? '#34D399' : '#10B981',    
+    borderColor: activeTheme === 'dark' ? '#334155' : '#E2E8F0', 
 };
 
     return (
