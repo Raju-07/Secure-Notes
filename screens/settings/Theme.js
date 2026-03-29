@@ -144,6 +144,5 @@ const styles = StyleSheet.create({
         paddingRight:8,
         margin:20,
     }
-    
 
-})
+});
