@@ -1,4 +1,4 @@
-import {StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,102 +14,70 @@ import ShareScreen from '../screens/settings/ShareApp';
 import AboutScreen from '../screens/settings/AboutScreen';
 import FeedbackScreen from '../screens/settings/Feedback';
 import AppTheme from '../screens/settings/Theme';
-import { ThemeProvider } from '../context/ThemeContext';  // imported Theme Provider
-
+import { ThemeContext, ThemeProvider } from '../context/ThemeContext';  // imported Theme Provider
+import { useContext } from 'react';
 
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function SettingsStack(){
-  return (
-    //Main Settings Tab
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Setting"
-        component = {SettingsScreen}
-        options ={{headerShown:false}}
-      />
-  {/* Lock Screen Page */}
-      <Stack.Screen
-        name="Lock"
-        component = {Lock}
-        options ={{title:"Application Lock" }}
-      />
-      {/* Theme screen Page */}
-      <Stack.Screen
-        name="Theme"
-        component = {AppTheme}
-        options ={{title:"Theme" }}
-      />
-
-      {/* // Session Screen Page */}
-      <Stack.Screen
-        name="Session"
-        component = {SessionScreen}
-        options ={{title:"Session" }}
-      />
-
-      {/* // Encryption Screen Page */}
-      <Stack.Screen
-        name="Encryption"
-        component = {EncryptionScreen}
-        options ={{title:"Encryption" }}
-      />
-
-      {/* // Feedback Screen Page */}
-      <Stack.Screen
-        name="Feedback"
-        component = {FeedbackScreen}
-        options ={{title:"Feedback" }}
-      />
-
-      <Stack.Screen
-        name="About"
-        component = {AboutScreen}
-        options ={{title:"About Secure Notes" }}
-      />
-      {/* //Share Screen Page */}
-      <Stack.Screen
-        name="Share"
-        component = {ShareScreen}
-        options ={{title:"Share" }}
-      />
-    </Stack.Navigator>
-  )
+    const {colors} = useContext(ThemeContext);
+    return (
+        <Stack.Navigator screenOptions={{
+            headerStyle: { backgroundColor: colors.card },
+            headerTintColor: colors.text,
+        }}>
+            <Stack.Screen name="Setting" component={SettingsScreen} options={{headerShown:false}} />
+            <Stack.Screen name="Lock" component={Lock} options={{title:"Application Lock"}} />
+            <Stack.Screen name="Theme" component={AppTheme} options={{title:"Theme"}} />
+            <Stack.Screen name="Session" component={SessionScreen} options={{title:"Session"}} />
+            <Stack.Screen name="Encryption" component={EncryptionScreen} options={{title:"Encryption"}} />
+            <Stack.Screen name="Feedback" component={FeedbackScreen} options={{title:"Feedback"}} />
+            <Stack.Screen name="About" component={AboutScreen} options={{title:"About Us"}} />
+            <Stack.Screen name="Share" component={ShareScreen} options={{title:"Share"}} />
+        </Stack.Navigator>
+    );
 }
 
-export default function App() {
+function MainApp() {
+  const { activeTheme,colors } = useContext(ThemeContext);
+
   return (
-    <ThemeProvider>
     <NavigationContainer>
-        <SafeAreaView style={{flex:1,justifyContent:'center'}}>
+      <StatusBar style={activeTheme === 'dark' ? 'light' : 'dark'}/>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
           <Tab.Navigator
             screenOptions={({ route }) => ({
               headerShown: false,           
-              tabBarActiveTintColor: '#000000e5', 
+              tabBarActiveTintColor: colors.primary, 
               tabBarInactiveTintColor: 'gray',   
-              tabBarStyle: { height: 60,},     
+              tabBarStyle: { 
+                height: 65, 
+                backgroundColor: colors.card, 
+                borderTopColor: colors.background,
+                paddingBottom: 10
+              },     
               
               tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
-
-                if (route.name === 'Home') {
-                  iconName = focused ? 'home' : 'home-outline';
-                } else if (route.name === 'Settings') {
-                  iconName = focused ? 'settings' : 'settings-outline';
-                }
-
+                let iconName = route.name === 'Home' 
+                  ? (focused ? 'home' : 'home-outline') 
+                  : (focused ? 'settings' : 'settings-outline');
                 return <Ionicons name={iconName} size={size} color={color} />;
               },
             })}>
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Settings" component={SettingsStack} />
           </Tab.Navigator>
-
         </SafeAreaView>
       </NavigationContainer>
-    </ThemeProvider>
   );
 }
 
+export default function App() {
+  return (
+    <ThemeProvider>
+       <MainApp />
+    </ThemeProvider>
+  );
+}
