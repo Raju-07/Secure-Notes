@@ -16,7 +16,8 @@ import FeedbackScreen from '../screens/settings/Feedback';
 import AppTheme from '../screens/settings/Theme';
 import { ThemeContext, ThemeProvider } from '../context/ThemeContext';  // imported Theme Provider
 import { useContext } from 'react';
-
+import LockScreen from '../screens/ScreenLock';
+import { AuthContext,AuthProvider } from '../context/AuthContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -42,6 +43,17 @@ function SettingsStack(){
 
 function MainApp() {
   const { activeTheme,colors } = useContext(ThemeContext);
+  const {isLocked } = useContext(AuthContext);
+
+  if (isLocked) {
+    return (
+      <SafeAreaView style={{flex:1,backgroundColor:colors.background}}>
+        <StatusBar style={activeTheme === 'dark' ? 'light':'dark'} />
+        <LockScreen/>
+      </SafeAreaView>
+
+    )
+  }
 
   return (
     <NavigationContainer>
@@ -77,7 +89,9 @@ function MainApp() {
 export default function App() {
   return (
     <ThemeProvider>
+      <AuthProvider>
        <MainApp />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
