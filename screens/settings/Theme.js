@@ -16,12 +16,12 @@ export default function AppTheme(){
     const toggleDark = () => updateTheme('dark')
 
     return(
-        <View style={[styles.container,{backgroundColor:"#000"}]}>
+        <View style={[styles.container,{backgroundColor:colors.background}]}>
             <Text style={[styles.title,{color:colors.text}]}>
                 Current Theme
             </Text>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>      
                     <Ionicons
                      name={IsSystem ? 'cog-outline': IsLight ? 'sunny-outline' : 'moon-outline'}
@@ -45,9 +45,9 @@ export default function AppTheme(){
                 Select Theme
             </Text>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                <Ionicons name="cog-outline" size={30} />
+                <Ionicons name="cog-outline" size={30} color={colors.text} />
                 <Text style={[styles.option,{color:colors.text}]}>System</Text>
                 </View>
                 
@@ -60,9 +60,9 @@ export default function AppTheme(){
 
             </View>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                    <Ionicons name="sunny-outline" size={30} />
+                    <Ionicons name="sunny-outline" size={30} color={colors.text}/>
                     <Text style={[styles.option,{color:colors.text}]}>
                         Light Theme
                     </Text>
@@ -77,9 +77,9 @@ export default function AppTheme(){
                />
             </View>
             
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                    <Ionicons name="moon-outline" size={30} />
+                    <Ionicons name="moon-outline" size={30} color={colors.text}/>
                     <Text style={[styles.option,{color:colors.text}]}>Dark Theme</Text>
                 </View>
 
@@ -105,10 +105,9 @@ const styles = StyleSheet.create({
     header:{
         flexDirection:'row',
         justifyContent:'space-between',
-        marginLeft:20,
+        marginHorizontal:12,
         marginTop:8,
-        marginRight:20,
-        padding:5,
+        paddingHorizontal:12,
         alignItems:"center",
         backgroundColor:'#6cc2ad18',
         borderRadius:15,

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import { ThemeContext } from '../context/ThemeContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen({ navigation }) {
   const { colors } = useContext(ThemeContext);
@@ -21,8 +22,8 @@ export default function SettingsScreen({ navigation }) {
   );
 
   return (
-
     <ScrollView style={[styles.container,{backgroundColor:colors.background}]}>
+      <SafeAreaView>
       <Text style={[styles.headerText,{color:colors.text}]}>Settings</Text>
 
       <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
@@ -88,17 +89,19 @@ export default function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.version}>
-          <Text style={[styles.text,{color:colors.text}]}> {Constants.expoConfig.version} </Text>
+          <Text style={[styles.text,{color:colors.text}]}> Version: {Constants.expoConfig.version} </Text>
       </View>
 
+    </SafeAreaView>
     </ScrollView>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 20,
   },
   headerText: {
     fontSize: 28,
@@ -148,8 +151,7 @@ const styles = StyleSheet.create({
     paddingTop:10,
   },
   text:{
-    fontSize:16,
-    color:'#334155',
+    fontSize:12,
     fontWeight:500,
   }
 });
