@@ -1,12 +1,16 @@
-import { useRef, useState } from "react";
-import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback,Pressable } from "react-native";
+import { useContext, useRef, useState } from "react";
+import { StyleSheet,View,Text,ScrollView,Button,Modal,Animated,Easing, TouchableWithoutFeedback,Pressable, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from '../context/ThemeContext';  // imported Theme Provider
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BlurView } from "expo-blur"; // Blue view import
+import * as Haptics from "expo-haptics";
 
 
 export default function HomeScreen (){
     const [isModalVisible,setIsModalVisible] = useState(false);
     const slideAni = useRef(new Animated.Value(0)).current;
-
+    const { colors ,activeTheme} = useContext(ThemeContext);
     // Modal Options
 
     const options = [
@@ -14,77 +18,99 @@ export default function HomeScreen (){
     {id:'2',name:'Notes',icon:'document-text-outline'},
     {id:'3',name:'Events',icon:'calendar-outline'},
     {id:'4',name:'PassKey',icon:'key-outline'},
-    {id:'5',name:'Remind',icon:'alarm-outline'}
+    {id:'5',name:'Remind',icon:'alarm-outline'},
+    {id:'6',name:'Photo',icon:'image'},
     ]
 
 
     // OPEN Modal
     const openModal = () => {
-        setIsModalVisible(true);
-        Animated.timing(slideAni,{
-            toValue:1,
-            duration:300,
-            easing:Easing.out(Easing.poly(4)),
-            useNativeDriver:true
-        }).start()
-    }
+      setIsModalVisible(true);
+      Animated.spring(slideAni, {
+          toValue: 1,
+          friction: 8, 
+          tension: 40,
+          useNativeDriver: true,
+      }).start();
+      if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
 
-    //CLOSE Modal
-    const closeModal = () => {
-        Animated.timing(slideAni,{
-            toValue:0,
-            duration:250,
-            easing:Easing.in(Easing.poly(4)),
-            useNativeDriver:true
-        }).start(()=> setIsModalVisible(false));
-    }
+//close Modal
+  const closeModal = () => {
+      Animated.timing(slideAni, {
+          toValue: 0,
+          duration: 250,
+          easing: Easing.in(Easing.ease),
+          useNativeDriver: true,
+      }).start(() => setIsModalVisible(false));
+  };
 
     const translateY = slideAni.interpolate({
-        inputRange:[0,1],
+      inputRange:[0,1],
         outputRange:[300,0]
     })
 
     return(
-      <View style={styles.container}>
-      {/* Branding */}
-        <Text style={styles.headerText}>Secure Notes</Text>
+      <View style={[styles.container,{backgroundColor:colors.background}]}>
+        <SafeAreaView>
+          {/* Branding */}
+          <Text style={[styles.headerText,{color:colors.text}]}>Secure Notes</Text>
 
-      {/* Screen Content i.e. cards */}
-      {/* Full Home Screen */}
-        <ScrollView style={styles.container}>
-          <Text style={styles.title}>Hello world</Text>
-        </ScrollView>
+          {/* Screen Content i.e. cards */}
+          {/* Full Home Screen */}
+          <ScrollView style={styles.container}>
+            <Text style={[styles.title,{color:colors.text}]}>Hello world</Text>
+          </ScrollView>
+        </SafeAreaView>
 
-     {/* Add Button */}
-        <Pressable  style={styles.fab}
+        {/* Add Button */}
+        <Pressable
+          style={[styles.fab,{backgroundColor:colors.button}]}
           onPress={() => openModal()}
           accessibilityLabel="Add item">  
-          <Ionicons name="add" size={28} color="white" />
-          </Pressable>
+          <Ionicons name="add" size={28} color={colors.icon} />
+        </Pressable>
 
-      {/* Modal for Add option */}
+        {/* Modal for Add option */}
         <Modal
           visible={isModalVisible}
           transparent
+          animationType="none"
           onRequestClose={closeModal} >
+
           <View style={styles.backdrop}>
             <TouchableWithoutFeedback onPress={closeModal}>
               <View style={styles.backdropTouchable} />
             </TouchableWithoutFeedback>
 
             <Animated.View style={[
-              styles.bottomSheet,
+              styles.bottomSheet,{backgroundColor:colors.bottomSheet},
               {transform:[{translateY}]},
+              Platform.OS === 'android' && {backgroundColor:colors.card}
               ]}>
+
+              {/* iOS GLASS EFFECT */}
+              {Platform.OS === 'ios' && (
+                <BlurView
+                  intensity={80}
+                  tint={activeTheme === 'dark' ? 'dark' : 'light'}
+                  style={StyleSheet.absoluteFill} />
+              )}
+
                 <View style={styles.grid} >
                   {
                     options.map(option => (
                       <Pressable 
                         key={option.id}
-                        style={styles.cell}
+                        android_ripple={{ color: colors.primary + '33', borderless: true }}
+                        style={({ pressed }) => 
+                        [styles.cell,{opacity: pressed ? 0.5 : 1}
+                          
+                        ]}
+                        
                         onPress={()=> console.log("pressed",option.name)}>
-                          <Ionicons name={option.icon} size={36} color="#072e58"/>
-                          <Text style={styles.label}> {option.name} </Text>
+                          <Ionicons name={option.icon} size={36} color={colors.icon}/>
+                          <Text style={[styles.label,{color:colors.text}]}> {option.name} </Text>
                       </Pressable>
                         ))
                       }
@@ -100,8 +126,7 @@ export default function HomeScreen (){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-    paddingTop: 60,
+    paddingTop: 20,
   },
   headerText: {
     fontSize: 28,
@@ -147,13 +172,12 @@ const styles = StyleSheet.create({
   backdrop: {
   flex: 1,
   justifyContent: 'flex-end', // align bottom sheet to bottom
-  backgroundColor: 'rgba(0,0,0,0.4)', // dim background
+  backgroundColor: 'rgba(0, 0, 0, 0.17)', // dim background
 },
 backdropTouchable: {
   flex: 1, // fills the area above the sheet so taps close it
 },
 bottomSheet: {
-  backgroundColor: '#F1F5F9',
   padding: 20,
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
@@ -168,7 +192,6 @@ fab: {
   width: 65,
   height: 52,
   borderRadius: 10,
-  backgroundColor: '#072e58', // or your accent color
   alignItems: 'center',
   justifyContent: 'center',
   elevation: 6,              // Android shadow
@@ -191,8 +214,7 @@ cell:{
 
 label:{
   marginTop:8,
-  fontSize:14,
-  color:"#334155"
+  fontSize:12,
 }
 
 

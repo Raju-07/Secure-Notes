@@ -1,9 +1,12 @@
-import React, { version } from 'react';
+import React, { useContext, version } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
+import { ThemeContext } from '../context/ThemeContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen({ navigation }) {
+  const { colors } = useContext(ThemeContext);
   
   // Reusable Setting Row Component
   const SettingItem = ({ icon, title, onPress, color = "#475569" }) => (
@@ -12,18 +15,18 @@ export default function SettingsScreen({ navigation }) {
         <View style={[styles.iconContainer, { backgroundColor: color + '15' }]}>
           <Ionicons name={icon} size={22} color={color} />
         </View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title,{color:colors.text}]}>{title}</Text>
       </View>
       <Ionicons name="chevron-forward" size={20} color="#CBD5E1" />
     </TouchableOpacity>
   );
 
   return (
+    <ScrollView style={[styles.container,{backgroundColor:colors.background}]}>
+      <SafeAreaView>
+      <Text style={[styles.headerText,{color:colors.text}]}>Settings</Text>
 
-    <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Settings</Text>
-
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="lock-closed-outline"
             title="Lock App"
@@ -31,7 +34,7 @@ export default function SettingsScreen({ navigation }) {
             onPress={()=> navigation.navigate("Lock")}
             />
       </View>
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="color-palette-outline"
             title="Theme"
@@ -40,7 +43,7 @@ export default function SettingsScreen({ navigation }) {
             />
       </View>
       
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem
             icon="timer-outline"
             title="Session"
@@ -49,7 +52,7 @@ export default function SettingsScreen({ navigation }) {
             />
       </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
             icon="shield-outline" 
             title="Encryption" 
@@ -58,7 +61,7 @@ export default function SettingsScreen({ navigation }) {
             />
         </View>
 
-      <View style={styles.section}>
+      <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
           icon="information-circle-outline" 
           title="About Us" 
@@ -67,7 +70,7 @@ export default function SettingsScreen({ navigation }) {
         />
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
             <SettingItem 
             icon="chatbubble-ellipses-outline" 
             title="Feedback" 
@@ -76,7 +79,7 @@ export default function SettingsScreen({ navigation }) {
             />
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
         <SettingItem 
           icon="share-social-outline" 
           title="Share App" 
@@ -86,18 +89,19 @@ export default function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.version}>
-          <Text style={styles.text}> {Constants.expoConfig.version} </Text>
+          <Text style={[styles.text,{color:colors.text}]}> Version: {Constants.expoConfig.version} </Text>
       </View>
 
+    </SafeAreaView>
     </ScrollView>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-    paddingTop: 60,
+    paddingTop: 20,
   },
   headerText: {
     fontSize: 28,
@@ -107,10 +111,12 @@ const styles = StyleSheet.create({
     color: '#1E293B',
   },
   section: {
-    backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#F1F5F9',
+    borderRadius:10,
+    marginLeft:12,
+    marginRight:12,
+    marginBottom:3,
   },
   item: {
     flexDirection: 'row',
@@ -118,8 +124,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+
+    borderBottomColor: '#0e0e0f',
   },
   leftSection: {
     flexDirection: 'row',
@@ -145,8 +151,7 @@ const styles = StyleSheet.create({
     paddingTop:10,
   },
   text:{
-    fontSize:16,
-    color:'#334155',
+    fontSize:12,
     fontWeight:500,
   }
 });

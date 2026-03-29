@@ -1,80 +1,69 @@
-import { useState } from "react";
+import React,{ useContext, useState } from "react";
 import { View,Text,StyleSheet,Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from "../../context/ThemeContext";
 
 export default function AppTheme(){
-    const [IsSystem,setIsSystem] = useState(true);
-    const [IsLight,setIsLight]= useState(false);
-    const [IsDark,setIsDark]= useState(false);
+    const {theme,updateTheme,colors} = useContext(ThemeContext);
+
+    const IsSystem = theme === 'system'
+    const IsLight = theme === 'light'
+    const IsDark = theme === 'dark'
 
 
-    const toggleLock = ()=>{
-        setIsSystem(!IsSystem);
-        setIsLight(false);
-        setIsDark(false);
-    };
-
-    const toggleLight =()=>{
-        setIsLight(!IsLight);
-        setIsDark(false);
-        setIsSystem(false);
-    };
-
-    const toogleDark= () =>{
-          setIsDark(!IsDark);
-          setIsLight(false);
-          setIsSystem(false);
-    };
-    
+    const toggleSystem = () => updateTheme('system')
+    const toggleLight = () => updateTheme('light')
+    const toggleDark = () => updateTheme('dark')
 
     return(
-        <View style={styles.container}>
-            <Text style={styles.title}>
+        <View style={[styles.container,{backgroundColor:colors.background}]}>
+            <Text style={[styles.title,{color:colors.text}]}>
                 Current Theme
             </Text>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>      
-                    <Ionicons name={IsSystem ? 'cog-outline': IsLight ? 'sunny-outline' : 'moon-outline'} size={30} />
-                    <Text style={styles.option}>
+                    <Ionicons
+                     name={IsSystem ? 'cog-outline': IsLight ? 'sunny-outline' : 'moon-outline'}
+                     size={30} 
+                     color={colors.text}
+                    />
+                    <Text style={[styles.option,{color:colors.text}]}>
                         {IsSystem ? 'System' : IsLight ? 'Light Theme' : 'Dark Theme'}
                     </Text>
                 </View>
                 <Switch 
-                thumbColor={ true ? 'pink':'white'} 
+                thumbColor={ 'pink'} 
                 trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
                 value={true} 
-                onValueChange={toggleLock}
                 disabled
                 />
             </View>
 
 
-            <Text style={styles.title}>
+            <Text style={[styles.title,{color:colors.text}]}>
                 Select Theme
             </Text>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                <Ionicons name="cog-outline" size={30} />
-                <Text style={styles.option}>
-                    System
-                </Text>
+                <Ionicons name="cog-outline" size={30} color={colors.text} />
+                <Text style={[styles.option,{color:colors.text}]}>System</Text>
                 </View>
                 
                <Switch 
                 thumbColor={ IsSystem ?'pink':'white'} 
                 trackColor={{false:'#d7c6c6',true:'#d6aad6'}}
                value={IsSystem} 
-               onValueChange={toggleLock}
+               onValueChange={toggleSystem}
                disabled={IsSystem}/>
 
             </View>
 
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                    <Ionicons name="sunny-outline" size={30} />
-                    <Text style={styles.option}>
+                    <Ionicons name="sunny-outline" size={30} color={colors.text}/>
+                    <Text style={[styles.option,{color:colors.text}]}>
                         Light Theme
                     </Text>
                 </View>
@@ -88,26 +77,23 @@ export default function AppTheme(){
                />
             </View>
             
-            <View style={styles.header}>
+            <View style={[styles.header,{backgroundColor:colors.card}]}>
                 <View style={styles.together}>
-                    <Ionicons name="moon-outline" size={30} />
-                    <Text style={styles.option}>
-                        Dark Theme
-                    </Text>
+                    <Ionicons name="moon-outline" size={30} color={colors.text}/>
+                    <Text style={[styles.option,{color:colors.text}]}>Dark Theme</Text>
                 </View>
 
                 <Switch 
                     thumbColor={ IsDark ?'pink':'white'} 
                     trackColor={{false:'#d7c6c6',true:'#d6aad6'}} 
                     value={IsDark} 
-                    onValueChange={toogleDark}
+                    onValueChange={toggleDark}
                     disabled={IsDark}
                     />
-
             </View>
-
         </View>
-)}
+);
+}
 
 const styles = StyleSheet.create({
     container:{flex:1},
@@ -119,10 +105,9 @@ const styles = StyleSheet.create({
     header:{
         flexDirection:'row',
         justifyContent:'space-between',
-        marginLeft:20,
+        marginHorizontal:12,
         marginTop:8,
-        marginRight:20,
-        padding:5,
+        paddingHorizontal:12,
         alignItems:"center",
         backgroundColor:'#6cc2ad18',
         borderRadius:15,
