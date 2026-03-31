@@ -21,51 +21,57 @@ export default function AppTheme(){
                 Select Theme
             </Text>
 
-            <View style={[styles.header,{backgroundColor:colors.card}]}>
-                <View style={styles.together}>
-                <Ionicons name="cog-outline" size={30} color={colors.text} />
-                <Text style={[styles.option,{color:colors.text}]}>System</Text>
-                </View>
+            <View style={[styles.group,{backgroundColor:colors.card,borderColor:colors.borderColor}]}>
+                <View style={[styles.header,{backgroundColor:colors.card}]}>
+                    <View style={styles.together}>
+                    <Ionicons name="cog-outline" size={30} color={colors.text} />
+                    <Text style={[styles.option,{color:colors.text}]}>System</Text>
+                    </View>
+                    
+                <Switch 
+                    thumbColor={ IsSystem ? colors.primary : '#f4f3f4'} 
+                    trackColor={{false:'#767577',true: colors.primary + "50"}}
+                value={IsSystem} 
+                onValueChange={toggleSystem}
+                disabled={IsSystem}
+                style={{marginTop:10}}
+                />
                 
-               <Switch 
-                thumbColor={ IsSystem ? colors.primary : '#f4f3f4'} 
-                trackColor={{false:'#767577',true: colors.primary + "50"}}
-               value={IsSystem} 
-               onValueChange={toggleSystem}
-               disabled={IsSystem}/>
-
-            </View>
-
-            <View style={[styles.header,{backgroundColor:colors.card}]}>
-                <View style={styles.together}>
-                    <Ionicons name="sunny-outline" size={30} color={colors.text}/>
-                    <Text style={[styles.option,{color:colors.text}]}>
-                        Light Theme
-                    </Text>
                 </View>
 
-               <Switch 
-                thumbColor={ IsLight ? colors.primary : '#f4f3f4'} 
-               trackColor={{false:'#767577',true : colors.primary + "50"}}
-               value={IsLight} 
-               onValueChange={toggleLight}
-               disabled={IsLight}   
-               />
-            </View>
-            
-            <View style={[styles.header,{backgroundColor:colors.card}]}>
-                <View style={styles.together}>
-                    <Ionicons name="moon-outline" size={30} color={colors.text}/>
-                    <Text style={[styles.option,{color:colors.text}]}>Dark Theme</Text>
-                </View>
+                <View style={[styles.header,{backgroundColor:colors.card}]}>
+                    <View style={styles.together}>
+                        <Ionicons name="sunny-outline" size={30} color={colors.text}/>
+                        <Text style={[styles.option,{color:colors.text}]}>
+                            Light Theme
+                        </Text>
+                    </View>
 
                 <Switch 
-                    thumbColor={ IsDark ? colors.primary : '#f4f3f4'} 
-                    trackColor={{false:'#767577',true:colors.primary + "50"}} 
-                    value={IsDark} 
-                    onValueChange={toggleDark}
-                    disabled={IsDark}
-                    />
+                    thumbColor={ IsLight ? colors.primary : '#f4f3f4'} 
+                trackColor={{false:'#767577',true : colors.primary + "50"}}
+                value={IsLight} 
+                onValueChange={toggleLight}
+                disabled={IsLight}  
+                style={{marginTop:10}} 
+                />
+                </View>
+                
+                <View style={[styles.header,{backgroundColor:colors.card}]}>
+                    <View style={styles.together}>
+                        <Ionicons name="moon-outline" size={30} color={colors.text} />
+                        <Text style={[styles.option,{color:colors.text}]}>Dark Theme</Text>
+                    </View>
+
+                    <Switch 
+                        thumbColor={ IsDark ? colors.primary : '#f4f3f4'} 
+                        trackColor={{false:'#767577',true:colors.primary + "50"}} 
+                        value={IsDark} 
+                        onValueChange={toggleDark}
+                        disabled={IsDark}
+                        style={{marginTop:10}}
+                        />
+                </View>
             </View>
         </View>
 );
@@ -104,6 +110,17 @@ const styles = StyleSheet.create({
         backgroundColor:"black",
         paddingRight:8,
         margin:20,
-    }
+    },
+    
+    group: {
+    marginHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    overflow: 'hidden', 
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+  },
 
 });
