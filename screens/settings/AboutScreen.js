@@ -1,150 +1,149 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from "@expo/vector-icons/";
-import { ThemeContext } from '../../context/ThemeContext';
-import { useContext } from 'react';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AboutScreen() {
-  const {colors} = useContext(ThemeContext);
-  
   return (
-          
-    <ScrollView contentContainerStyle={[styles.container,{backgroundColor:colors.background}]}>
+    <ScrollView contentContainerStyle={styles.container}>
 
-    {/* Header Cards*/ }
-      <View style={[styles.card,{backgroundColor:colors.card}]}>
-      <Text style={[styles.title,{color:colors.text}]}>App Name : Secure Notes</Text>
-      <Text style={[styles.tag,{color:colors.textMuted}]}>Tagline : "Your Privacy ,Your Control"</Text>
+      <View style={styles.hero}>
+        <View style={styles.logo}>
+          <Ionicons name="shield-checkmark" size={32} color="#fff" />
+        </View>
 
-      </View>
-     
-     {/* App Description*/}
-      <View style={[styles.card,{backgroundColor:colors.card}]}>
-        <Text style={[styles.heading,{color:colors.text}]}>About App </Text>
-        <Text style={[styles.detail,{color:colors.textMuted}]}>
-          Secure notes is a private note-taking app where your data stays safe and protected with password and security.</Text>
+        <Text style={styles.appName}>Secure Notes</Text>
+        <Text style={styles.tagline}>Safe • Private • Powerful</Text>
       </View>
 
-
-    {/* Add Features */}
-      <View style={[styles. card,{backgroundColor:colors.card}]}>
-      <Text style={[styles.heading,{color:colors.text}]}> Features</Text>
-  
-        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="lock-closed" size={18} color={colors.icon}/> Password & Protected Notes</Text>
-        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="brush" size={15} color={colors.icon}/> Simple & Clean UI</Text>
-        <Text style={[styles. feature,{color:colors.text}]}><Ionicons name="flash-sharp" size={15} color={colors.icon}/> Fast and LightWeight</Text> 
+      <View style={styles.card}>
+        <Text style={styles.heading}>About App</Text>
+        <Text style={styles.text}>
+          Secure Notes is a powerful note app designed to keep your data safe 
+          with advanced security and smooth user experience.
+        </Text>
       </View>
 
-     {/* Developer Info */}
-    <View style={[styles.card,{backgroundColor:colors.card}]}>
-      <Text style={[styles.heading,{color:colors.text}]}>Developers</Text>
+      <View style={styles.card}>
+        <Text style={styles.heading}>Features</Text>
 
-      <Text style={[styles.name,{color:colors.text}]}>Name : Raju Yadav</Text> 
-      <Text style={[styles.role,{color:colors.textMuted}]}>Role : App Developer</Text>
+        <View style={styles.row}>
+          <Ionicons name="lock-closed" size={18} color="#4f46e5" />
+          <Text style={styles.rowText}> Strong Password Protection</Text>
+        </View>
 
-      <Text style={[styles.name,{color:colors.text}]}>Name : Raja Singh Rajput </Text>
-      <Text style={[styles.role,{color:colors.textMuted}]}>Role : UX Desginer </Text>  
- 
-      <Text style={[styles.name,{color:colors.text}]}>Name : Prachi Jaswal</Text>
-      <Text style={[styles.role,{color:colors.textMuted}]}>Role : UI/UX Designer</Text>
-    </View>
+        <View style={styles.row}>
+          <Ionicons name="color-palette" size={18} color="#10b981" />
+          <Text style={styles.rowText}> Beautiful UI Experience</Text>
+        </View>
 
-    {/* App info */}
-    <View style={[styles.app,{backgroundColor:colors.card}]}>
-      <Text style={[styles.heading,{color:colors.text}]}>App Info</Text>
-      <Text style={[styles.detail,{color:colors.textMuted}]}>Version : 1.0.0</Text>
-    </View>
+        <View style={styles.row}>
+          <Ionicons name="rocket" size={18} color="#f59e0b" />
+          <Text style={styles.rowText}> Fast Performance</Text>
+        </View>
+      </View>
 
-    {/* Footer */}
-      <Text style={[styles.footer,{color:colors.text}]}>Thank you for using Secure Notes ❤️</Text>
+      <View style={styles.card}>
+        <Text style={styles.heading}>Developers</Text>
+
+        <Text style={styles.name}>Raju Yadav</Text>
+        <Text style={styles.role}>App Developer</Text>
+
+        <Text style={styles.name}>Raja Singh Rajput</Text>
+        <Text style={styles.role}>UX Designer</Text>
+
+        <Text style={styles.name}>Prachi Jaswal</Text>
+        <Text style={styles.role}>UI/UX Designer</Text>
+      </View>
+
+      <Text style={styles.footer}>
+        Built with ❤️ Secure Notes
+      </Text>
+
     </ScrollView>
   );
 }
 
-
 const styles = StyleSheet.create({
-   
   container: {
-     padding: 15,
-     backgroundColor:'#f5f7fa',
+    backgroundColor: "#f1f5f9",
+    paddingBottom: 20,
+  },
+
+  hero: {
+    backgroundColor: "#4f46e5",
+    paddingTop: 50,
+    paddingBottom: 40,
+    alignItems: "center",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+
+  logo: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    padding: 15,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+
+  appName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+
+  tagline: {
+    fontSize: 14,
+    color: "#e0e7ff",
+    marginTop: 5,
   },
 
   card: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 15,
-    elevation:10,
-    shadowColor:'blue',
-  }, 
-
-
-  title: { 
-    fontSize: 20, 
-    fontWeight:'bold',
-    textAlign:'center',
-    color:'#333',
+    backgroundColor: "#fff",
+    marginHorizontal: 15,
+    marginTop: -20,
+    padding: 16,
+    borderRadius: 18,
+    elevation: 6,
   },
 
-  tag:{
-    fontSize:15,
-    color:'#150e0e',
-    paddingTop:5,
-    textAlign:'center',
-    fontStyle:'italic'
+  heading: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#1e293b",
   },
 
-  heading:{
-    fontWeight:'bold',
-    fontSize:20,
-    color:"#6b6767",
-    marginBottom:5,
+  text: {
+    fontSize: 14,
+    color: "#475569",
   },
 
-  detail:{
-    fontSize:14,
-    color:'#000',
-    lineHeight:20,
-    fontWeight:'500',
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 6,
   },
 
-  feature:{
-    fontSize:15,
-    marginVertical:5,
-    color:'#666363',
-    fontWeight:'600',
+  rowText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#334155",
   },
 
-  name:{
-    fontSize:16,
-    fontWeight:'bold',
-    marginTop:7,
+  name: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginTop: 8,
   },
 
-  role:{
-    fontSize:14,
-    color:"#777",
-    fontWeight:"bold",
-    fontStyle:"italic",
-    marginVertical:5,
+  role: {
+    fontSize: 13,
+    color: "#64748b",
   },
 
-  footer:{
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom:20,
-    color: '#787575',
-    fontWeight:"bold",
-    fontSize:15,
+  footer: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#64748b",
+    fontSize: 14,
   },
-
-  app:{
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 15,
-    elevation:20,
-    marginTop:10,
-    shadowColor:'#d9f507',
-  },
-
 });
