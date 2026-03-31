@@ -1,148 +1,159 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from "@expo/vector-icons/";
-import { useContext } from 'react';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AboutScreen() {
-  
   return (
-          
-    <ScrollView contentContainerStyle={[styles.container]}>
+    <ScrollView contentContainerStyle={styles.container}>
 
-    {/* Header Cards*/ }
-      <View style={[styles.card]}>
-      <Text style={[styles.title]}>App Name : Secure Notes</Text>
-      <Text style={[styles.tag]}>Tagline : "Your Privacy ,Your Control"</Text>
+      {/* 🔥 HERO SECTION */}
+      <View style={styles.hero}>
+        <View style={styles.logo}>
+          <Ionicons name="shield-checkmark" size={32} color="#fff" />
+        </View>
 
-      </View>
-     
-     {/* App Description*/}
-      <View style={[styles.card]}>
-        <Text style={[styles.heading]}>About App </Text>
-        <Text style={[styles.detail]}>
-          Secure notes is a private note-taking app where your data stays safe and protected with password and security.</Text>
+        <Text style={styles.appName}>Secure Notes</Text>
+        <Text style={styles.tagline}>Safe • Private • Powerful</Text>
       </View>
 
-
-    {/* Add Features */}
-      <View style={[styles. card]}>
-      <Text style={[styles.heading]}> Features</Text>
-  
-        <Text style={[styles. feature]}><Ionicons name="lock-closed" size={18} /> Password & Protected Notes</Text>
-        <Text style={[styles. feature]}><Ionicons name="brush" size={15} /> Simple & Clean UI</Text>
-        <Text style={[styles. feature]}><Ionicons name="flash-sharp" size={15} /> Fast and LightWeight</Text> 
+      {/* 📦 FLOATING CARD */}
+      <View style={styles.card}>
+        <Text style={styles.heading}>About App</Text>
+        <Text style={styles.text}>
+          Secure Notes is a powerful note app designed to keep your data safe 
+          with advanced security and smooth user experience.
+        </Text>
       </View>
 
-     {/* Developer Info */}
-    <View style={[styles.card]}>
-      <Text style={[styles.heading]}>Developers</Text>
+      {/* ⚡ FEATURES */}
+      <View style={styles.card}>
+        <Text style={styles.heading}>Features</Text>
 
-      <Text style={[styles.name]}>Name : Raju Yadav</Text> 
-      <Text style={[styles.role]}>Role : App Developer</Text>
+        <View style={styles.row}>
+          <Ionicons name="lock-closed" size={18} color="#4f46e5" />
+          <Text style={styles.rowText}> Strong Password Protection</Text>
+        </View>
 
-      <Text style={[styles.name]}>Name : Raja Singh Rajput </Text>
-      <Text style={[styles.role]}>Role : UX Desginer </Text>  
- 
-      <Text style={[styles.name]}>Name : Prachi Jaswal</Text>
-      <Text style={[styles.role]}>Role : UI/UX Designer</Text>
-    </View>
+        <View style={styles.row}>
+          <Ionicons name="color-palette" size={18} color="#10b981" />
+          <Text style={styles.rowText}> Beautiful UI Experience</Text>
+        </View>
 
-    {/* App info */}
-    <View style={[styles.app]}>
-      <Text style={[styles.heading]}>App Info</Text>
-      <Text style={[styles.detail]}>Version : 1.0.0</Text>
-    </View>
+        <View style={styles.row}>
+          <Ionicons name="rocket" size={18} color="#f59e0b" />
+          <Text style={styles.rowText}> Fast Performance</Text>
+        </View>
+      </View>
 
-    {/* Footer */}
-      <Text style={[styles.footer]}>Thank you for using Secure Notes ❤️</Text>
+      {/* 👨‍💻 DEVELOPERS */}
+      <View style={styles.card}>
+        <Text style={styles.heading}>Developers</Text>
+
+        <Text style={styles.name}>Raju Yadav</Text>
+        <Text style={styles.role}>App Developer</Text>
+
+        <Text style={styles.name}>Raja Singh Rajput</Text>
+        <Text style={styles.role}>UX Designer</Text>
+
+        <Text style={styles.name}>Prachi Jaswal</Text>
+        <Text style={styles.role}>UI/UX Designer</Text>
+      </View>
+
+      {/* ❤️ FOOTER */}
+      <Text style={styles.footer}>
+        Built with ❤️ Secure Notes
+      </Text>
+
     </ScrollView>
   );
 }
 
-
 const styles = StyleSheet.create({
-   
   container: {
-     padding: 15,
-     backgroundColor:'#f5f7fa',
+    backgroundColor: "#f1f5f9",
+    paddingBottom: 20,
   },
 
+  /* 🔥 HERO */
+  hero: {
+    backgroundColor: "#4f46e5",
+    paddingTop: 50,
+    paddingBottom: 40,
+    alignItems: "center",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+
+  logo: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    padding: 15,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+
+  appName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+
+  tagline: {
+    fontSize: 14,
+    color: "#e0e7ff",
+    marginTop: 5,
+  },
+
+  /* 📦 CARD */
   card: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 15,
-    elevation:100,
-    shadowColor:'#003b7e',
-  }, 
-
-
-  title: { 
-    fontSize: 20, 
-    fontWeight:'bold',
-    textAlign:'center',
-    color:'#333',
+    backgroundColor: "#fff",
+    marginHorizontal: 15,
+    marginTop: -20, // 👈 floating effect
+    padding: 16,
+    borderRadius: 18,
+    elevation: 6,
   },
 
-  tag:{
-    fontSize:15,
-    color:'#150e0e',
-    paddingTop:5,
-    textAlign:'center',
-    fontStyle:'italic'
+  heading: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#1e293b",
   },
 
-  heading:{
-    fontWeight:'bold',
-    fontSize:20,
-    color:"#6b6767",
-    marginBottom:5,
+  text: {
+    fontSize: 14,
+    color: "#475569",
   },
 
-  detail:{
-    fontSize:14,
-    color:'#000',
-    lineHeight:20,
-    fontWeight:'500',
+  /* ⚡ ROW */
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 6,
   },
 
-  feature:{
-    fontSize:15,
-    marginVertical:5,
-    color:'#666363',
-    fontWeight:'600',
+  rowText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: "#334155",
   },
 
-  name:{
-    fontSize:16,
-    fontWeight:'bold',
-    marginTop:7,
+  /* 👨‍💻 DEV */
+  name: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginTop: 8,
   },
 
-  role:{
-    fontSize:14,
-    color:"#777",
-    fontWeight:"bold",
-    fontStyle:"italic",
-    marginVertical:5,
+  role: {
+    fontSize: 13,
+    color: "#64748b",
   },
 
-  footer:{
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom:20,
-    color: '#787575',
-    fontWeight:"bold",
-    fontSize:15,
+  /* ❤️ FOOTER */
+  footer: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#64748b",
+    fontSize: 14,
   },
-
-  app:{
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 15,
-    elevation:20,
-    marginTop:10,
-    shadowColor:'#033fafb0',
-  },
-
 });
