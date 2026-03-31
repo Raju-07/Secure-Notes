@@ -10,7 +10,6 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
         const loadTheme = async () => {
-            console.log(systemTheme,"|| in theme context file")
             try {
                 const savedTheme = await AsyncStorage.getItem('userTheme');
                 if (savedTheme) {
