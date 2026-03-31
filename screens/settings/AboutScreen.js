@@ -5,7 +5,6 @@ export default function AboutScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      {/* 🔥 HERO SECTION */}
       <View style={styles.hero}>
         <View style={styles.logo}>
           <Ionicons name="shield-checkmark" size={32} color="#fff" />
@@ -15,7 +14,6 @@ export default function AboutScreen() {
         <Text style={styles.tagline}>Safe • Private • Powerful</Text>
       </View>
 
-      {/* 📦 FLOATING CARD */}
       <View style={styles.card}>
         <Text style={styles.heading}>About App</Text>
         <Text style={styles.text}>
@@ -24,7 +22,6 @@ export default function AboutScreen() {
         </Text>
       </View>
 
-      {/* ⚡ FEATURES */}
       <View style={styles.card}>
         <Text style={styles.heading}>Features</Text>
 
@@ -44,7 +41,6 @@ export default function AboutScreen() {
         </View>
       </View>
 
-      {/* 👨‍💻 DEVELOPERS */}
       <View style={styles.card}>
         <Text style={styles.heading}>Developers</Text>
 
@@ -58,7 +54,6 @@ export default function AboutScreen() {
         <Text style={styles.role}>UI/UX Designer</Text>
       </View>
 
-      {/* ❤️ FOOTER */}
       <Text style={styles.footer}>
         Built with ❤️ Secure Notes
       </Text>
@@ -73,7 +68,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  /* 🔥 HERO */
   hero: {
     backgroundColor: "#4f46e5",
     paddingTop: 50,
@@ -102,11 +96,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  /* 📦 CARD */
   card: {
     backgroundColor: "#fff",
     marginHorizontal: 15,
-    marginTop: -20, // 👈 floating effect
+    marginTop: -20,
     padding: 16,
     borderRadius: 18,
     elevation: 6,
@@ -124,7 +117,6 @@ const styles = StyleSheet.create({
     color: "#475569",
   },
 
-  /* ⚡ ROW */
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -137,7 +129,6 @@ const styles = StyleSheet.create({
     color: "#334155",
   },
 
-  /* 👨‍💻 DEV */
   name: {
     fontSize: 15,
     fontWeight: "600",
@@ -149,7 +140,6 @@ const styles = StyleSheet.create({
     color: "#64748b",
   },
 
-  /* ❤️ FOOTER */
   footer: {
     textAlign: "center",
     marginTop: 20,
