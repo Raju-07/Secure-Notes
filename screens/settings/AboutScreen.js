@@ -1,60 +1,64 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from '../../context/ThemeContext';
+import { useContext } from 'react';
 
 export default function AboutScreen() {
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
+  const { colors } = useContext(ThemeContext);
 
-      <View style={styles.hero}>
+  return (
+    <ScrollView contentContainerStyle={[styles.container,{backgroundColor:colors.background}]}>
+
+      <View style={[styles.hero,{backgroundColor:colors.primary}]}>
         <View style={styles.logo}>
-          <Ionicons name="shield-checkmark" size={32} color="#fff" />
+          <Ionicons name="shield-checkmark" size={32} color={colors.icon} />
         </View>
 
-        <Text style={styles.appName}>Secure Notes</Text>
-        <Text style={styles.tagline}>Safe • Private • Powerful</Text>
+        <Text style={[styles.appName]}>Secure Notes</Text>
+        <Text style={[styles.tagline]}>Safe • Private • Powerful</Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.heading}>About App</Text>
-        <Text style={styles.text}>
+      <View style={[styles.card,{backgroundColor:colors.card }]}>
+        <Text style={[styles.heading,{color:colors.text}]}>About App</Text>
+        <Text style={[styles.text,{color:colors.text}]}>
           Secure Notes is a powerful note app designed to keep your data safe 
           with advanced security and smooth user experience.
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.heading}>Features</Text>
+      <View style={[styles.card,{backgroundColor:colors.card}]}>
+        <Text style={[styles.heading,{color:colors.text}]}>Features</Text>
 
         <View style={styles.row}>
           <Ionicons name="lock-closed" size={18} color="#4f46e5" />
-          <Text style={styles.rowText}> Strong Password Protection</Text>
+          <Text style={[styles.rowText,{color:colors.text}]}> Strong Password Protection</Text>
         </View>
 
         <View style={styles.row}>
           <Ionicons name="color-palette" size={18} color="#10b981" />
-          <Text style={styles.rowText}> Beautiful UI Experience</Text>
+          <Text style={[styles.rowText,{color:colors.text}]}> Beautiful UI Experience</Text>
         </View>
 
         <View style={styles.row}>
           <Ionicons name="rocket" size={18} color="#f59e0b" />
-          <Text style={styles.rowText}> Fast Performance</Text>
+          <Text style={[styles.rowText,{color:colors.text}]}> Fast Performance</Text>
         </View>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.heading}>Developers</Text>
+      <View style={[styles.card,{backgroundColor:colors.card}]}>
+        <Text style={[styles.heading,{color:colors.text}]}>Developers</Text>
 
-        <Text style={styles.name}>Raju Yadav</Text>
-        <Text style={styles.role}>App Developer</Text>
+        <Text style={[styles.name,{color:colors.text}]}>Raju Yadav</Text>
+        <Text style={[styles.role,{color:colors.textMuted}]}>App Developer</Text>
 
-        <Text style={styles.name}>Raja Singh Rajput</Text>
-        <Text style={styles.role}>UX Designer</Text>
+        <Text style={[styles.name,{color:colors.text}]}>Raja Singh Rajput</Text>
+        <Text style={[styles.role,{color:colors.textMuted}]}>UX Designer</Text>
 
-        <Text style={styles.name}>Prachi Jaswal</Text>
-        <Text style={styles.role}>UI/UX Designer</Text>
+        <Text style={[styles.name,{color:colors.text}]}>Prachi Jaswal</Text>
+        <Text style={[styles.role,{color:colors.textMuted}]}>UI/UX Designer</Text>
       </View>
 
-      <Text style={styles.footer}>
+      <Text style={[styles.footer,{color:colors.text}]}>
         Built with ❤️ Secure Notes
       </Text>
 
