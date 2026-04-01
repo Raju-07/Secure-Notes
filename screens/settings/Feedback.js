@@ -4,206 +4,216 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Modal,
   TextInput,
-  ScrollView,
-  Alert,
-  Vibration
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function FeedbackScreen() {
 
-  const [rating, setRating] = useState(0);
-  const [emoji, setEmoji] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [type, setType] = useState("");
   const [message, setMessage] = useState("");
-  const [submitted, setSubmitted] = useState(false);
 
-  const emojis = ["😡", "😕", "😐", "😊", "😍"];
-
-  const handleSubmit = () => {
-
-    // ❌ validation
-    if (rating === 0 && emoji === "" && message.trim() === "") {
-      Alert.alert("Error ❌", "Please give some feedback first!");
-      return;
-    }
-
-    const data = {
-      rating,
-      emoji,
-      message,
-      time: new Date().toLocaleString()
-    };
-
-    // 🔥 console log
-    console.log("📩 Feedback Data:", data);
-
-    // 📳 vibration
-    Vibration.vibrate(200);
-
-    // 📱 alert (delay fix)
-    setTimeout(() => {
-      Alert.alert("Success ✅", "Feedback submitted!");
-    }, 100);
-
-    // 🎉 success screen
-    setTimeout(() => {
-      setSubmitted(true);
-    }, 300);
+  const openForm = (t) => {
+    setType(t);
+    setShowOptions(false);
+    setModalVisible(true);
   };
 
-  // 🎉 SUCCESS SCREEN
-  if (submitted) {
-    return (
-      <View style={styles.successContainer}>
-        <Ionicons name="checkmark-circle" size={80} color="#22c55e" />
-        <Text style={styles.successText}>Thank You!</Text>
-        <Text style={styles.successSub}>Your feedback has been submitted</Text>
-      </View>
-    );
-  }
+  const handleSubmit = () => {
+    console.log(type, message);
+    setModalVisible(false);
+    setMessage("");
+    alert("Submitted ✅");
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
 
-      {/* HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Rate Your Experience</Text>
-        <Text style={styles.subtitle}>We value your feedback</Text>
-      </View>
-
-      {/* 😍 EMOJI */}
-      <View style={styles.emojiRow}>
-        {emojis.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => setEmoji(item)}
-            style={[
-              styles.emojiBox,
-              emoji === item && styles.emojiActive
-            ]}
-          >
-            <Text style={styles.emoji}>{item}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* ⭐ STARS */}
-      <View style={styles.ratingRow}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity key={star} onPress={() => setRating(star)}>
-            <Ionicons
-              name={star <= rating ? "star" : "star-outline"}
-              size={30}
-              color="#f59e0b"
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* 💬 INPUT */}
-      <TextInput
-        placeholder="Tell us what you think..."
-        value={message}
-        onChangeText={setMessage}
-        style={styles.input}
-        multiline
-      />
-
-      {/* 🔘 BUTTON */}
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit Feedback</Text>
+      {/* 🔥 MAIN BUTTON */}
+      <TouchableOpacity
+        style={styles.mainBtn}
+        onPress={() => setShowOptions(!showOptions)}
+      >
+        <Ionicons name="sparkles" size={22} color="#fff" />
+        <Text style={styles.mainText}>Give Feedback</Text>
       </TouchableOpacity>
 
-    </ScrollView>
+      {/* 🔥 CARD OPTIONS */}
+      {showOptions && (
+        <View style={styles.cardBox}>
+
+          <TouchableOpacity style={styles.card} onPress={() => openForm("Review")}>
+            <Ionicons name="star" size={24} color="#f59e0b" />
+            <View>
+              <Text style={styles.cardTitle}>Review</Text>
+              <Text style={styles.cardSub}>Share your experience</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card} onPress={() => openForm("Report")}>
+            <Ionicons name="warning" size={24} color="#ef4444" />
+            <View>
+              <Text style={styles.cardTitle}>Report</Text>
+              <Text style={styles.cardSub}>Report any issue</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card} onPress={() => openForm("Suggestion")}>
+            <Ionicons name="bulb" size={24} color="#10b981" />
+            <View>
+              <Text style={styles.cardTitle}>Suggestion</Text>
+              <Text style={styles.cardSub}>Give improvement ideas</Text>
+            </View>
+          </TouchableOpacity>
+
+        </View>
+      )}
+
+      {/* 🔥 MODAL (BOTTOM SHEET STYLE) */}
+      <Modal transparent animationType="slide" visible={modalVisible}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={styles.overlay}
+        >
+
+          <View style={styles.bottomSheet}>
+
+            <View style={styles.dragBar} />
+
+            <Text style={styles.title}>{type}</Text>
+
+            <TextInput
+              placeholder={`Write your ${type}...`}
+              value={message}
+              onChangeText={setMessage}
+              style={styles.input}
+              multiline
+            />
+
+            <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+              <Text style={styles.submitText}>Submit</Text>
+            </TouchableOpacity>
+
+          </View>
+
+        </KeyboardAvoidingView>
+      </Modal>
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f8fafc",
-  },
-
-  header: {
-    marginBottom: 20,
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#1e293b",
-  },
-
-  subtitle: {
-    fontSize: 14,
-    color: "#64748b",
-  },
-
-  emojiRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-
-  emojiBox: {
-    padding: 10,
-    borderRadius: 12,
-    backgroundColor: "#e2e8f0",
-  },
-
-  emojiActive: {
-    backgroundColor: "#6366f1",
-  },
-
-  emoji: {
-    fontSize: 24,
-  },
-
-  ratingRow: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-
-  input: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
-    height: 120,
-    textAlignVertical: "top",
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-    marginBottom: 20,
-  },
-
-  button: {
-    backgroundColor: "#6366f1",
-    padding: 15,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 15,
-  },
-
-  successContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#eef2ff",
   },
 
-  successText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginTop: 10,
+  /* 🔥 MAIN BUTTON */
+  mainBtn: {
+    flexDirection: "row",
+    backgroundColor: "#6366f1",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    alignItems: "center",
+    elevation: 6,
   },
 
-  successSub: {
-    fontSize: 14,
+  mainText: {
+    color: "#fff",
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  /* 🔥 CARD BOX */
+  cardBox: {
+    marginTop: 20,
+    width: "90%",
+  },
+
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 16,
+    marginBottom: 12,
+    elevation: 4,
+  },
+
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 10,
+    color: "#1e293b",
+  },
+
+  cardSub: {
+    fontSize: 13,
+    marginLeft: 10,
     color: "#64748b",
   },
+
+  /* 🔥 MODAL */
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+
+  bottomSheet: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+
+  dragBar: {
+    width: 50,
+    height: 5,
+    backgroundColor: "#cbd5e1",
+    borderRadius: 10,
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+
+  input: {
+    backgroundColor: "#f1f5f9",
+    borderRadius: 15,
+    padding: 15,
+    height: 120,
+    textAlignVertical: "top",
+    marginBottom: 20,
+  },
+
+  submitBtn: {
+    backgroundColor: "#6366f1",
+    padding: 15,
+    borderRadius: 15,
+    alignItems: "center",
+  },
+
+  submitText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
 });
