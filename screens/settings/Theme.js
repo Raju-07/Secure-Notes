@@ -52,8 +52,8 @@ export default function AppTheme(){
           <Switch
             value={true}
             disabled
-            thumbColor={"pink"}
-            trackColor={{ false: "#d7c6c6", true: "#d6aad6" }}
+            thumbColor={"white"}
+            trackColor={{ false: "#eee4e4", true: "#91d861" }}
           />
         </View>
       </View>
@@ -73,8 +73,8 @@ export default function AppTheme(){
             value={IsSystem}
             onValueChange={toggleSystem}
             disabled={IsSystem}
-            thumbColor={IsSystem ? "pink" : "white"}
-            trackColor={{ false: "#d7c6c6", true: "#d6aad6" }}
+            thumbColor={IsSystem ? "white" : "white"}
+            trackColor={{ false: "#c0c0bd", true: "#91d861" }}
           />
         </View>
       </View>
@@ -91,8 +91,8 @@ export default function AppTheme(){
             value={IsLight}
             onValueChange={toggleLight}
             disabled={IsLight}
-            thumbColor={IsLight ? "pink" : "white"}
-            trackColor={{ false: "#d7c6c6", true: "#d6aad6" }}
+            thumbColor={IsLight ? "white" : "white"}
+            trackColor={{ false: "#c0c0bd", true: "#91d861" }}
           />
         </View>
       </View>
@@ -109,8 +109,8 @@ export default function AppTheme(){
             value={IsDark}
             onValueChange={toggleDark}
             disabled={IsDark}
-            thumbColor={IsDark ? "pink" : "white"}
-            trackColor={{ false: "#d7c6c6", true: "#d6aad6" }}
+            thumbColor={IsDark ? "white" : "white"}
+            trackColor={{ false: "#c0c0bd", true: "#91d861" }}
           />
         </View>
       </View>
