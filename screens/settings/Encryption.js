@@ -38,7 +38,7 @@ export default function Encryption() {
 
     return (
         <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
-            {/* 1. Tech Info Card */}
+            {/* Tech Info Card */}
             <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
                 <Ionicons name="shield-checkmark" size={40} color={colors.primary} />
                 <Text style={[styles.infoTitle, { color: colors.text }]}>Hardware Encryption</Text>
@@ -47,7 +47,7 @@ export default function Encryption() {
                 </Text>
             </View>
 
-            {/* 2. Storage Monitor */}
+            {/* Storage Monitor */}
             <View style={[styles.section, { backgroundColor: colors.card }]}>
                 <Text style={[styles.label, { color: colors.text }]}>Vault Storage (2MB Limit)</Text>
                 <View style={[styles.progressBg, { backgroundColor: colors.background }]}>
@@ -58,7 +58,7 @@ export default function Encryption() {
                 </Text>
             </View>
 
-            {/* 3. Brute Force Toggle */}
+            {/* Brute Force Toggle */}
             <View style={[styles.row, { backgroundColor: colors.card }]}>
                 <View style={{ flex: 1 }}>
                     <Text style={[styles.label, { color: colors.text }]}>Brute Force Protection</Text>
@@ -72,7 +72,7 @@ export default function Encryption() {
                 />
             </View>
 
-            {/* 4. The Nuclear Option */}
+            {/*The Nuclear Option */}
             <TouchableOpacity style={styles.wipeBtn} onPress={handleWipeData}>
                 <Ionicons name="trash-outline" size={20} color="#EF4444" />
                 <Text style={styles.wipeText}>Shred All Data</Text>
