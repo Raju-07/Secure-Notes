@@ -10,7 +10,6 @@ export default function Encryption() {
     const { isBruteForceEnabled, toggleBruteForce } = useContext(AuthContext);
     const [storageUsed, setStorageUsed] = useState(0);
 
-    // Calculate storage usage for the BCA report
     useEffect(() => {
         const checkStorage = async () => {
             const notes = await SecureStorage.getNotes();
