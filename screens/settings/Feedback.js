@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform
-} from "react-native";
+import {View,Text,StyleSheet,TouchableOpacity,Modal,TextInput,KeyboardAvoidingView,Platform} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function FeedbackScreen() {
@@ -34,7 +25,7 @@ export default function FeedbackScreen() {
   return (
     <View style={styles.container}>
 
-      {/* 🔥 MAIN BUTTON */}
+      // Main Button for Feedback
       <TouchableOpacity
         style={styles.mainBtn}
         onPress={() => setShowOptions(!showOptions)}
@@ -43,7 +34,7 @@ export default function FeedbackScreen() {
         <Text style={styles.mainText}>Give Feedback</Text>
       </TouchableOpacity>
 
-      {/* 🔥 CARD OPTIONS */}
+      // Feedback Options in card style
       {showOptions && (
         <View style={styles.cardBox}>
 
@@ -74,36 +65,26 @@ export default function FeedbackScreen() {
         </View>
       )}
 
-      {/* 🔥 MODAL (BOTTOM SHEET STYLE) */}
+      // bottomSheet Modal
       <Modal transparent animationType="slide" visible={modalVisible}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : null}
-          style={styles.overlay}
-        >
-
+          style={styles.overlay}>
           <View style={styles.bottomSheet}>
-
             <View style={styles.dragBar} />
-
-            <Text style={styles.title}>{type}</Text>
-
-            <TextInput
-              placeholder={`Write your ${type}...`}
-              value={message}
-              onChangeText={setMessage}
-              style={styles.input}
-              multiline
-            />
-
-            <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-              <Text style={styles.submitText}>Submit</Text>
-            </TouchableOpacity>
-
-          </View>
-
+              <Text style={styles.title}>{type}</Text>
+              <TextInput
+                placeholder={`Write your ${type}...`}
+                value={message}
+                onChangeText={setMessage}
+                style={styles.input}
+                multiline/>
+              <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+                <Text style={styles.submitText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
         </KeyboardAvoidingView>
       </Modal>
-
     </View>
   );
 }
@@ -117,7 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#eef2ff",
   },
 
-  /* 🔥 MAIN BUTTON */
   mainBtn: {
     flexDirection: "row",
     backgroundColor: "#6366f1",
@@ -135,7 +115,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  /* 🔥 CARD BOX */
   cardBox: {
     marginTop: 20,
     width: "90%",
@@ -164,7 +143,7 @@ const styles = StyleSheet.create({
     color: "#64748b",
   },
 
-  /* 🔥 MODAL */
+
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
@@ -214,6 +193,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
-  },
+},
 
 });
