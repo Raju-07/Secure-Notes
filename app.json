@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Secure Notes", 
+    "name": "Secure Notes",
     "slug": "Secure-Notes",
     "version": "1.0.0",
     "orientation": "automatic",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash-icon.png",
-      "resizeMode": "contain", 
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -24,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
