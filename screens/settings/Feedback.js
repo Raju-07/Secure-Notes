@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {View,Text,StyleSheet,TouchableOpacity,Modal,TextInput,KeyboardAvoidingView,Platform} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from "@react-navigation/native";
 
 export default function FeedbackScreen() {
-
+  const { colors } = useContext(ThemeContext);
   const [showOptions, setShowOptions] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [type, setType] = useState("");
@@ -23,26 +24,26 @@ export default function FeedbackScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
 
-      // Main Button for Feedback
+      {/* // Main Button for Feedback */}
       <TouchableOpacity
-        style={styles.mainBtn}
+        style={[styles.mainBtn, { backgroundColor: colors.primary }]}
         onPress={() => setShowOptions(!showOptions)}
       >
         <Ionicons name="sparkles" size={22} color="#fff" />
-        <Text style={styles.mainText}>Give Feedback</Text>
+        <Text style={[styles.mainText, { color: colors.text }]}>Give Feedback</Text>
       </TouchableOpacity>
 
-      // Feedback Options in card style
+      {/* // Feedback Options in card style */}
       {showOptions && (
-        <View style={styles.cardBox}>
+        <View style={[styles.cardBox, { backgroundColor: colors.card }]}>
 
           <TouchableOpacity style={styles.card} onPress={() => openForm("Review")}>
             <Ionicons name="star" size={24} color="#f59e0b" />
             <View>
-              <Text style={styles.cardTitle}>Review</Text>
-              <Text style={styles.cardSub}>Share your experience</Text>
+              <Text style={[styles.cardTitle, { color: colors.text }]}>Review</Text>
+              <Text style={[styles.cardSub, { color: colors.text }]}>Share your experience</Text>
             </View>
           </TouchableOpacity>
 
@@ -54,7 +55,7 @@ export default function FeedbackScreen() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} onPress={() => openForm("Suggestion")}>
+          <TouchableOpacity style={[styles.card, { backgroundColor: colors.card }]} onPress={() => openForm("Suggestion")}>
             <Ionicons name="bulb" size={24} color="#10b981" />
             <View>
               <Text style={styles.cardTitle}>Suggestion</Text>
@@ -65,7 +66,7 @@ export default function FeedbackScreen() {
         </View>
       )}
 
-      // bottomSheet Modal
+      {/* // bottomSheet Modal */}
       <Modal transparent animationType="slide" visible={modalVisible}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : null}
