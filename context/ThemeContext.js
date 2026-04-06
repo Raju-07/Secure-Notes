@@ -41,7 +41,7 @@ export const ThemeProvider = ({ children }) => {
     
     // Buttons & Icons
     button: activeTheme === 'dark' ? '#334155' : '#1E293B',     
-    icon: activeTheme === 'dark' ? '#F8FAFC' : '#FFFFFF',  
+    icon: activeTheme === 'dark' ? '#F8FAFC' : '#000000',  
 
     bottomSheet: activeTheme === 'dark' ? '#1E293B' : '#FFFFFF',
 
