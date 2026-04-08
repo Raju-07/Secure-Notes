@@ -3,7 +3,7 @@
     "name": "Secure Notes",
     "slug": "Secure-Notes",
     "version": "1.0.0",
-    "orientation": "automatic",
+    "orientation": "portrait",
     "icon": "assets/_Shield_Logo.png",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -26,7 +26,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-community/datetimepicker"
     ]
   }
 }
