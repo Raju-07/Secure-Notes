@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 // ─────────────────────────────────────────────────────────────
 //  SECURE STORAGE SERVICE 
@@ -50,9 +51,6 @@ const generateTOTP = (secret) => {
   return String(Math.abs(hash) % 1000000).padStart(6, '0');
 };
 
-// ─────────────────────────────────────────────────────────────
-//  SECTION CONFIG
-// ─────────────────────────────────────────────────────────────
 const SECTIONS = [
   { id: 'all',       label: 'All',      icon: 'grid-outline',           filledIcon: 'grid',               color: '#6366F1' },
   { id: 'notes',     label: 'Notes',    icon: 'document-text-outline',  filledIcon: 'document-text',      color: '#6C63FF' },
@@ -63,7 +61,7 @@ const SECTIONS = [
 ];
 
 // ─────────────────────────────────────────────────────────────
-//  STABLE FIELD COMPONENT (Fixes Keyboard Issue)
+//  STABLE FIELD COMPONENT (Fixes Keyboard Auto-Close)
 // ─────────────────────────────────────────────────────────────
 const Field = ({ label, value, key_, placeholder, multiline, secureEntry, keyboardType, viewMode, showPassword, setShowPassword, colors, form, setForm }) => (
   <View style={styles.fieldWrap}>
@@ -102,6 +100,9 @@ const Field = ({ label, value, key_, placeholder, multiline, secureEntry, keyboa
   </View>
 );
 
+// ─────────────────────────────────────────────────────────────
+//  MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────
 export default function HomeScreen() {
   const { colors, activeTheme } = useContext(ThemeContext);
 
@@ -123,6 +124,10 @@ export default function HomeScreen() {
   const [showPassword,     setShowPassword]     = useState(false);
   const [totpCode,         setTotpCode]         = useState('');
   const [totpSeconds,      setTotpSeconds]      = useState(30);
+
+  // Date Picker State
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerMode, setPickerMode] = useState('date');
 
   const slideAni = useRef(new Animated.Value(0)).current;
 
@@ -166,7 +171,8 @@ export default function HomeScreen() {
     setForm({});
     setShowPassword(false);
     closeFab(() => {
-      if (sectionId !== 'all') setActiveSection(sectionId);
+      const target = sectionId === 'all' ? 'notes' : sectionId;
+      setActiveSection(target);
       setTimeout(() => setIsDetailVisible(true), 100);
     });
   };
@@ -183,7 +189,6 @@ export default function HomeScreen() {
 
   const handleSave = async () => {
     const ts = Date.now();
-    // Determine section if we are in 'All' view
     const sectionToSave = detailItem ? detailItem.type : activeSection;
     
     switch (sectionToSave) {
@@ -201,7 +206,7 @@ export default function HomeScreen() {
       }
       case 'events': {
         if (!form.title?.trim()) return Alert.alert('Event title required');
-        const entry = { id: detailItem?.id || ts.toString(), type: 'events', title: form.title, location: form.location || '', description: form.description || '', eventDate: form.eventDate || new Date().toISOString().slice(0,16), date: detailItem?.date || ts };
+        const entry = { id: detailItem?.id || ts.toString(), type: 'events', title: form.title, location: form.location || '', description: form.description || '', eventDate: form.eventDate || new Date().toISOString(), date: detailItem?.date || ts };
         const list = detailItem ? events.map(e => e.id === entry.id ? entry : e) : [entry, ...events];
         await SecureStorage.saveEvents(list); setEvents(list); break;
       }
@@ -213,7 +218,7 @@ export default function HomeScreen() {
       }
       case 'reminders': {
         if (!form.title?.trim()) return Alert.alert('Reminder title required');
-        const entry = { id: detailItem?.id || ts.toString(), type: 'reminders', title: form.title, note: form.note || '', remindAt: form.remindAt || new Date().toISOString().slice(0,16), done: detailItem?.done || false, date: detailItem?.date || ts };
+        const entry = { id: detailItem?.id || ts.toString(), type: 'reminders', title: form.title, note: form.note || '', remindAt: form.remindAt || new Date().toISOString(), done: form.done || false, date: detailItem?.date || ts };
         const list = detailItem ? reminders.map(r => r.id === entry.id ? entry : r) : [entry, ...reminders];
         await SecureStorage.saveReminders(list); setReminders(list); break;
       }
@@ -226,7 +231,7 @@ export default function HomeScreen() {
       { text: 'Cancel', style: 'cancel' },
       { text: 'Delete', style: 'destructive', onPress: async () => {
           const id = detailItem.id;
-          const sectionToDelete = detailItem.type || activeSection;
+          const sectionToDelete = detailItem.type;
           switch (sectionToDelete) {
             case 'notes': { const l = notes.filter(x => x.id !== id); await SecureStorage.saveNotes(l); setNotes(l); break; }
             case 'passwords': { const l = passwords.filter(x => x.id !== id); await SecureStorage.savePasswords(l); setPasswords(l); break; }
@@ -239,26 +244,32 @@ export default function HomeScreen() {
     ]);
   };
 
-  const toggleReminder = async (item) => {
-    const updated = { ...item, done: !item.done };
+  const toggleReminderStatus = async (item, newValue) => {
+    const updated = { ...item, done: newValue };
     const list = reminders.map(r => r.id === item.id ? updated : r);
-    await SecureStorage.saveReminders(list); setReminders(list);
+    await SecureStorage.saveReminders(list); 
+    setReminders(list);
+    setDetailItem(updated);
   };
 
-  // ── Aggregated Data Logic ──
-  const currentData = (() => {
-    if (activeSection === 'all') {
-      const combined = [
-        ...notes.map(i => ({ ...i, type: 'notes' })),
-        ...passwords.map(i => ({ ...i, type: 'passwords' })),
-        ...events.map(i => ({ ...i, type: 'events' })),
-        ...passkeys.map(i => ({ ...i, type: 'passkeys' })),
-        ...reminders.map(i => ({ ...i, type: 'reminders' })),
-      ];
-      return combined.sort((a, b) => isNewestFirst ? b.date - a.date : a.date - b.date);
+  const onPickerChange = (event, selectedDate) => {
+    if (Platform.OS === 'android') setShowPicker(false);
+    if (selectedDate) {
+      const key = (detailItem?.type || activeSection) === 'events' ? 'eventDate' : 'remindAt';
+      setForm(f => ({ ...f, [key]: selectedDate.toISOString() }));
     }
-    const raw = { notes, passwords, events, passkeys, reminders }[activeSection] || [];
-    return [...raw].map(i => ({ ...i, type: activeSection })).sort((a, b) => isNewestFirst ? b.date - a.date : a.date - b.date);
+  };
+
+  const currentData = (() => {
+    const combined = [
+      ...notes.map(i => ({ ...i, type: 'notes' })),
+      ...passwords.map(i => ({ ...i, type: 'passwords' })),
+      ...events.map(i => ({ ...i, type: 'events' })),
+      ...passkeys.map(i => ({ ...i, type: 'passkeys' })),
+      ...reminders.map(i => ({ ...i, type: 'reminders' })),
+    ];
+    if (activeSection === 'all') return combined.sort((a, b) => isNewestFirst ? b.date - a.date : a.date - b.date);
+    return combined.filter(i => i.type === activeSection).sort((a, b) => isNewestFirst ? b.date - a.date : a.date - b.date);
   })();
 
   const renderCard = (item) => {
@@ -266,16 +277,16 @@ export default function HomeScreen() {
     const cfg = SECTIONS.find(s => s.id === type) || SECTIONS[1];
     const subtitle = (() => {
       if (type === 'passwords') return item.username || 'No username';
-      if (type === 'events')    return formatDateTime(item.eventDate ? new Date(item.eventDate).getTime() : item.date);
+      if (type === 'events')    return formatDateTime(new Date(item.eventDate || item.date).getTime());
       if (type === 'passkeys')  return item.account || 'No account';
-      if (type === 'reminders') return item.remindAt ? formatDateTime(new Date(item.remindAt).getTime()) : '';
+      if (type === 'reminders') return formatDateTime(new Date(item.remindAt || item.date).getTime());
       return formatDate(item.date);
     })();
 
     return (
       <Pressable
         key={item.id}
-        onPress={() => { setActiveSection(type); openDetail(item); }}
+        onPress={() => openDetail(item)}
         android_ripple={{ color: cfg.color + '22' }}
         style={({ pressed }) => [
           isGridView ? styles.gridCard : styles.card,
@@ -286,7 +297,14 @@ export default function HomeScreen() {
           <Ionicons name={cfg.filledIcon} size={22} color={cfg.color} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={1}>{item.title}</Text>
+          <View style={styles.cardHeaderRow}>
+            <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={1}>{item.title}</Text>
+            {activeSection === 'all' && (
+              <View style={[styles.typeBadge, { backgroundColor: cfg.color + '15' }]}>
+                <Text style={{ fontSize: 9, color: cfg.color, fontWeight: '800' }}>{cfg.label.toUpperCase()}</Text>
+              </View>
+            )}
+          </View>
           <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 2 }} numberOfLines={1}>{subtitle}</Text>
           {type === 'reminders' && (
             <View style={[styles.doneBadge, { backgroundColor: item.done ? '#43C6AC22' : '#E040FB22' }]}>
@@ -303,8 +321,10 @@ export default function HomeScreen() {
     const isNew = !detailItem;
     const viewMode = !isNew && !isEditing;
     const currentType = detailItem ? detailItem.type : activeSection;
-
     const commonProps = { viewMode, showPassword, setShowPassword, colors, form, setForm };
+
+    const dateKey = currentType === 'events' ? 'eventDate' : 'remindAt';
+    const displayDate = form[dateKey] ? new Date(form[dateKey]) : new Date();
 
     switch (currentType) {
       case 'notes': return (
@@ -321,12 +341,46 @@ export default function HomeScreen() {
           <Field label="URL (optional)" value={form.url} key_="url" placeholder="https://" keyboardType="url" {...commonProps} />
         </>
       );
-      case 'events': return (
+      case 'events':
+      case 'reminders': return (
         <>
-          <Field label="Event Title" value={form.title} key_="title" placeholder="e.g. Team Meeting" {...commonProps} />
-          <Field label="Date & Time" value={form.eventDate} key_="eventDate" placeholder="YYYY-MM-DDTHH:MM" {...commonProps} />
-          <Field label="Location" value={form.location} key_="location" placeholder="Add a location" {...commonProps} />
-          <Field label="Description" value={form.description} key_="description" placeholder="Event details…" multiline {...commonProps} />
+          <Field label="Title" value={form.title} key_="title" placeholder="Subject..." {...commonProps} />
+          
+          <View style={styles.fieldWrap}>
+            <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Schedule</Text>
+            {viewMode ? (
+              <View style={[styles.fieldView, { borderColor: colors.borderColor }]}>
+                <Text style={{ color: colors.text }}>{formatDateTime(displayDate.getTime())}</Text>
+              </View>
+            ) : (
+              <View style={styles.dateTimeRow}>
+                <Pressable onPress={() => { setPickerMode('date'); setShowPicker(true); haptic(); }} style={[styles.selectorBtn, { backgroundColor: colors.card, borderColor: colors.borderColor }]}>
+                  <Ionicons name="calendar-outline" size={18} color={colors.primary} />
+                  <Text style={{ color: colors.text, marginLeft: 8 }}>{formatDate(displayDate)}</Text>
+                </Pressable>
+                <Pressable onPress={() => { setPickerMode('time'); setShowPicker(true); haptic(); }} style={[styles.selectorBtn, { backgroundColor: colors.card, borderColor: colors.borderColor }]}>
+                  <Ionicons name="time-outline" size={18} color={colors.primary} />
+                  <Text style={{ color: colors.text, marginLeft: 8 }}>{displayDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                </Pressable>
+              </View>
+            )}
+          </View>
+
+          <Field label="Notes" value={currentType === 'events' ? form.description : form.note} key_={currentType === 'events' ? 'description' : 'note'} placeholder="Add details…" multiline {...commonProps} />
+          
+          {viewMode && currentType === 'reminders' && (
+            <View style={styles.fieldWrap}>
+              <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Status</Text>
+              <View style={styles.switchRow}>
+                <Text style={{ color: colors.text, fontSize: 16 }}>{form.done ? 'Completed ✓' : 'Active Task'}</Text>
+                <Switch value={form.done || false} onValueChange={v => { setForm(f => ({ ...f, done: v })); toggleReminderStatus(detailItem, v); }} trackColor={{ true: '#43C6AC' }} />
+              </View>
+            </View>
+          )}
+
+          {showPicker && (
+            <DateTimePicker value={displayDate} mode={pickerMode} is24Hour={true} display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={onPickerChange} />
+          )}
         </>
       );
       case 'passkeys': return (
@@ -345,22 +399,6 @@ export default function HomeScreen() {
           )}
         </>
       );
-      case 'reminders': return (
-        <>
-          <Field label="Reminder Title" value={form.title} key_="title" placeholder="What to remember?" {...commonProps} />
-          <Field label="Date & Time" value={form.remindAt} key_="remindAt" placeholder="YYYY-MM-DDTHH:MM" {...commonProps} />
-          <Field label="Note" value={form.note} key_="note" placeholder="Extra details…" multiline {...commonProps} />
-          {viewMode && detailItem && (
-            <View style={styles.fieldWrap}>
-              <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Status</Text>
-              <View style={styles.switchRow}>
-                <Text style={{ color: colors.text, fontSize: 16 }}>{form.done ? 'Done ✓' : 'Pending'}</Text>
-                <Switch value={form.done || false} onValueChange={v => { setForm(f => ({ ...f, done: v })); toggleReminder({ ...detailItem, done: v }); }} trackColor={{ true: '#43C6AC' }} />
-              </View>
-            </View>
-          )}
-        </>
-      );
       default: return null;
     }
   };
@@ -373,11 +411,11 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={[styles.headerText, { color: colors.text }]}>{sc?.label}</Text>
-            <Text style={{ color: colors.textMuted, fontSize: 13, marginLeft: 20 }}>{currentData.length} {currentData.length === 1 ? 'item' : 'items'} stored</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 13, marginLeft: 20 }}>{currentData.length} total entries</Text>
           </View>
           <View style={styles.actionIcons}>
-            <Pressable onPress={() => setIsNewestFirst(v => !v)} style={styles.iconButton}><Ionicons name={isNewestFirst ? "arrow-down" : "arrow-up"} size={22} color={sc?.color} /></Pressable>
-            <Pressable onPress={() => setIsGridView(v => !v)} style={styles.iconButton}><Ionicons name={isGridView ? "list" : "grid"} size={22} color={sc?.color} /></Pressable>
+            <Pressable onPress={() => { setIsNewestFirst(!isNewestFirst); haptic(); }} style={styles.iconButton}><Ionicons name={isNewestFirst ? "arrow-down" : "arrow-up"} size={22} color={sc?.color} /></Pressable>
+            <Pressable onPress={() => { setIsGridView(!isGridView); haptic(); }} style={styles.iconButton}><Ionicons name={isGridView ? "list" : "grid"} size={22} color={sc?.color} /></Pressable>
           </View>
         </View>
 
@@ -394,7 +432,7 @@ export default function HomeScreen() {
           {currentData.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Ionicons name={sc?.icon} size={72} color={sc?.color + '30'} />
-              <Text style={[styles.emptyText, { color: colors.textMuted }]}>No {sc?.label} yet.{"\n"}Tap + to add one.</Text>
+              <Text style={[styles.emptyText, { color: colors.textMuted }]}>Nothing here yet.{"\n"}Tap + to secure your first item.</Text>
             </View>
           ) : (
             currentData.map(item => renderCard(item))
@@ -411,7 +449,7 @@ export default function HomeScreen() {
           <TouchableWithoutFeedback onPress={() => closeFab()}><View style={styles.backdropTouchable} /></TouchableWithoutFeedback>
           <Animated.View style={[styles.bottomSheet, { transform: [{ translateY }] }, Platform.OS === 'android' && { backgroundColor: colors.card }]}>
             {Platform.OS === 'ios' && <BlurView intensity={80} tint={activeTheme} style={StyleSheet.absoluteFill} />}
-            <Text style={[styles.sheetTitle, { color: colors.text }]}>Add New Item</Text>
+            <Text style={[styles.sheetTitle, { color: colors.text }]}>What would you like to secure?</Text>
             <View style={styles.optionGrid}>
               {SECTIONS.filter(s => s.id !== 'all').map(s => (
                 <Pressable key={s.id} android_ripple={{ color: s.color + '33' }} style={({ pressed }) => [styles.optionCell, { opacity: pressed ? 0.6 : 1 }]} onPress={() => openCreateForm(s.id)}>
@@ -436,7 +474,7 @@ export default function HomeScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {detailItem && !isEditing && (<Pressable onPress={handleDelete} style={[styles.headerBtn, { marginRight: 4 }]}><Ionicons name="trash-outline" size={20} color="#FF6584" /></Pressable>)}
                 {detailItem && !isEditing ? (
-                  <Pressable onPress={() => setIsEditing(true)} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === detailItem.type)?.color, fontWeight: '700', fontSize: 16 }}>Edit</Text></Pressable>
+                  <Pressable onPress={() => setIsEditing(true)} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color, fontWeight: '700', fontSize: 16 }}>Edit</Text></Pressable>
                 ) : (
                   <Pressable onPress={handleSave} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color, fontWeight: '700', fontSize: 16 }}>Save</Text></Pressable>
                 )}
@@ -445,7 +483,6 @@ export default function HomeScreen() {
             <View style={[styles.accentBar, { backgroundColor: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color }]} />
             <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 60 }} showsVerticalScrollIndicator={false}>
               {renderFormContent()}
-              {detailItem && <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 20, textAlign: 'center' }}>Created {formatDate(detailItem.date)}</Text>}
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>
@@ -465,21 +502,23 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 13, fontWeight: '600' },
   scrollBody: { paddingHorizontal: 20 },
   gridBody: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 15, justifyContent: 'space-between' },
-  card: { flexDirection: 'row', padding: 16, borderRadius: 16, marginBottom: 12, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, borderWidth: 1 },
-  gridCard: { width: '48%', padding: 18, borderRadius: 16, marginBottom: 14, alignItems: 'center', elevation: 2, borderWidth: 1 },
+  card: { flexDirection: 'row', padding: 16, borderRadius: 18, marginBottom: 12, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, borderWidth: 1 },
+  gridCard: { width: '48%', padding: 18, borderRadius: 18, marginBottom: 14, alignItems: 'center', elevation: 2, borderWidth: 1 },
   iconBox: { width: 44, height: 44, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   cardTitle: { fontSize: 15, fontWeight: '700' },
+  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 },
+  typeBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   doneBadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20, marginTop: 5 },
   emptyContainer: { flex: 1, alignItems: 'center', marginTop: 80 },
   emptyText: { textAlign: 'center', marginTop: 18, fontSize: 16, lineHeight: 26 },
-  fab: { position: 'absolute', right: 24, bottom: 28, width: 64, height: 64, borderRadius: 20, alignItems: 'center', justifyContent: 'center', elevation: 8, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 6 },
+  fab: { position: 'absolute', right: 24, bottom: 28, width: 64, height: 64, borderRadius: 22, alignItems: 'center', justifyContent: 'center', elevation: 8, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 6 },
   backdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.45)' },
   backdropTouchable: { flex: 1 },
-  bottomSheet: { padding: 24, paddingBottom: 36, borderTopLeftRadius: 32, borderTopRightRadius: 32, overflow: 'hidden' },
-  sheetTitle: { fontSize: 18, fontWeight: '700', marginBottom: 20 },
+  bottomSheet: { padding: 24, paddingBottom: 36, borderTopLeftRadius: 35, borderTopRightRadius: 35, overflow: 'hidden' },
+  sheetTitle: { fontSize: 16, fontWeight: '700', marginBottom: 20, textAlign: 'center' },
   optionGrid: { flexDirection: 'row', flexWrap: 'wrap' },
   optionCell: { width: '33.33%', alignItems: 'center', paddingVertical: 14 },
-  optionIconBg: { width: 56, height: 56, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
+  optionIconBg: { width: 56, height: 56, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
   optionLabel: { fontSize: 12, fontWeight: '600' },
   detailMain: { flex: 1 },
   detailHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1 },
@@ -488,13 +527,15 @@ const styles = StyleSheet.create({
   headerBtn: { padding: 8 },
   accentBar: { height: 3, width: '100%' },
   fieldWrap: { marginBottom: 20 },
-  fieldLabel: { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 },
-  fieldView: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 13, borderRadius: 12, borderWidth: 1.5 },
+  fieldLabel: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8 },
+  fieldView: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 13, borderRadius: 14, borderWidth: 1.5 },
   fieldViewText: { fontSize: 16, flex: 1 },
-  inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 4 },
+  inputRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 4 },
   input: { fontSize: 16, paddingVertical: 10 },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  totpBox: { alignItems: 'center', marginTop: 10, padding: 24, borderRadius: 20, backgroundColor: 'rgba(247,151,30,0.08)' },
+  dateTimeRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 10 },
+  selectorBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 14, borderWidth: 1.5 },
+  totpBox: { alignItems: 'center', marginTop: 10, padding: 24, borderRadius: 22, backgroundColor: 'rgba(247,151,30,0.08)' },
   totpCode: { fontSize: 44, fontWeight: '900', letterSpacing: 8 },
   totpBar: { height: 4, width: '80%', borderRadius: 4, marginTop: 10, overflow: 'hidden' },
   totpProgress: { height: '100%', borderRadius: 4 },
