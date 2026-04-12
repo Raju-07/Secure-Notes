@@ -12,9 +12,6 @@ import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-// ─────────────────────────────────────────────────────────────
-//  SECURE STORAGE SERVICE 
-// ─────────────────────────────────────────────────────────────
 const KEYS = {
   NOTES: "@vault_notes",
   PASSWORDS: "@vault_passwords",
@@ -36,9 +33,7 @@ const SecureStorage = {
   saveReminders: async (data) => { try { await AsyncStorage.setItem(KEYS.REMINDERS, JSON.stringify(data)); } catch {} },
 };
 
-// ─────────────────────────────────────────────────────────────
 //  HELPERS
-// ─────────────────────────────────────────────────────────────
 const haptic = () => { if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); };
 const formatDate = (ts) => new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 const formatDateTime = (ts) => new Date(ts).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -60,9 +55,7 @@ const SECTIONS = [
   { id: 'reminders', label: 'Remind',   icon: 'alarm-outline',          filledIcon: 'alarm',               color: '#E040FB' },
 ];
 
-// ─────────────────────────────────────────────────────────────
 //  STABLE FIELD COMPONENT (Fixes Keyboard Auto-Close)
-// ─────────────────────────────────────────────────────────────
 const Field = ({ label, value, key_, placeholder, multiline, secureEntry, keyboardType, viewMode, showPassword, setShowPassword, colors, form, setForm }) => (
   <View style={styles.fieldWrap}>
     <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>{label}</Text>
@@ -100,9 +93,7 @@ const Field = ({ label, value, key_, placeholder, multiline, secureEntry, keyboa
   </View>
 );
 
-// ─────────────────────────────────────────────────────────────
 //  MAIN COMPONENT
-// ─────────────────────────────────────────────────────────────
 export default function HomeScreen() {
   const { colors, activeTheme } = useContext(ThemeContext);
 
