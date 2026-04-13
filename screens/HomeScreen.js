@@ -12,6 +12,7 @@ import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+// label tags
 const KEYS = {
   NOTES: "@vault_notes",
   PASSWORDS: "@vault_passwords",
@@ -20,6 +21,7 @@ const KEYS = {
   REMINDERS: "@vault_reminders",
 };
 
+//Getting and saving data
 const SecureStorage = {
   getNotes: async () => { try { return JSON.parse(await AsyncStorage.getItem(KEYS.NOTES)) || []; } catch { return []; } },
   saveNotes: async (data) => { try { await AsyncStorage.setItem(KEYS.NOTES, JSON.stringify(data)); } catch {} },
@@ -38,6 +40,7 @@ const haptic = () => { if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.Im
 const formatDate = (ts) => new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 const formatDateTime = (ts) => new Date(ts).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+// Time based OTP
 const generateTOTP = (secret) => {
   const time = Math.floor(Date.now() / 30000);
   let hash = 0;
@@ -46,6 +49,7 @@ const generateTOTP = (secret) => {
   return String(Math.abs(hash) % 1000000).padStart(6, '0');
 };
 
+// Top Bar different options and themes color
 const SECTIONS = [
   { id: 'all',       label: 'All',      icon: 'grid-outline',           filledIcon: 'grid',               color: '#6366F1' },
   { id: 'notes',     label: 'Notes',    icon: 'document-text-outline',  filledIcon: 'document-text',      color: '#6C63FF' },
@@ -55,7 +59,7 @@ const SECTIONS = [
   { id: 'reminders', label: 'Remind',   icon: 'alarm-outline',          filledIcon: 'alarm',               color: '#E040FB' },
 ];
 
-//  STABLE FIELD COMPONENT (Fixes Keyboard Auto-Close)
+
 const Field = ({ label, value, key_, placeholder, multiline, secureEntry, keyboardType, viewMode, showPassword, setShowPassword, colors, form, setForm }) => (
   <View style={styles.fieldWrap}>
     <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>{label}</Text>
@@ -184,7 +188,7 @@ export default function HomeScreen() {
     
     switch (sectionToSave) {
       case 'notes': {
-        if (!form.title?.trim()) return Alert.alert('Title required');
+        if (!form.title?.trim()) return Alert.alert('Title required',"Please enter the Title");
         const entry = { id: detailItem?.id || ts.toString(), type: 'notes', title: form.title, content: form.content || '', date: detailItem?.date || ts };
         const list = detailItem ? notes.map(n => n.id === entry.id ? entry : n) : [entry, ...notes];
         await SecureStorage.saveNotes(list); setNotes(list); break;
@@ -321,7 +325,7 @@ export default function HomeScreen() {
       case 'notes': return (
         <>
           <Field label="Title" value={form.title} key_="title" placeholder="Note title" {...commonProps} />
-          <Field label="Content" value={form.content} key_="content" placeholder="Write your secure note…" multiline {...commonProps} />
+          <Field label="Content" value={form.content} key_="content" placeholder="Write your note…" multiline {...commonProps} />
         </>
       );
       case 'passwords': return (
@@ -410,7 +414,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ maxHeight: 60 }} contentContainerStyle={styles.tabBar}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ maxHeight: 60 }} contentContainerStyle={styles.tabBar}>
           {SECTIONS.map(s => (
             <Pressable key={s.id} onPress={() => { haptic(); setActiveSection(s.id); }} style={[styles.tab, activeSection === s.id && { backgroundColor: s.color + '20', borderColor: s.color }]}>
               <Ionicons name={activeSection === s.id ? s.filledIcon : s.icon} size={16} color={activeSection === s.id ? s.color : colors.textMuted} />
@@ -465,7 +469,7 @@ export default function HomeScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {detailItem && !isEditing && (<Pressable onPress={handleDelete} style={[styles.headerBtn, { marginRight: 4 }]}><Ionicons name="trash-outline" size={20} color="#FF6584" /></Pressable>)}
                 {detailItem && !isEditing ? (
-                  <Pressable onPress={() => setIsEditing(true)} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color, fontWeight: '700', fontSize: 16 }}>Edit</Text></Pressable>
+                  <Pressable onPress={() => setIsEditing(true)} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color, fontWeight: '700', fontSize: 16 }}><Ionicons name="create-outline" size={20} color="#fff"/></Text></Pressable>
                 ) : (
                   <Pressable onPress={handleSave} style={styles.headerBtn}><Text style={{ color: SECTIONS.find(s => s.id === (detailItem?.type || activeSection))?.color, fontWeight: '700', fontSize: 16 }}>Save</Text></Pressable>
                 )}
