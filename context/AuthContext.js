@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
-import { AppState } from "react-native"; 
+import { Alert, AppState } from "react-native"; 
 import * as LocalAuthentication from 'expo-local-authentication'; 
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { SecureStorage } from "../services/SecureStorage";
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
                 if (bfEnabled !== null) setIsBruteForceEnabled(bfEnabled === 'true');
 
             } catch (e) {
-                console.error("Failed to load auth settings", e);
+                Alert.alert("Auth Failed",`Failed to load auth settings \n${e}`)
             }
         };
         loadSettings();
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
                 const elapsed = (Date.now() - sessionStartTime.current) / 1000;
                 if (elapsed >= sessionDuration) {
                     setIsLocked(true);
-                    console.log("Session Timeout Reached.");
+                    Alert.alert("Timeout","Session Timeout Reached")
                 }
             }, 30000); // Check every 30 seconds
         }
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }) => {
                 }
             }
         } catch (error) {
-            console.error("Auth error", error);
+            Alert.alert("Auth Error", `authentication Failed due to \n${error}`);
         };
     };
 

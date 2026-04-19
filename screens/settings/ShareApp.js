@@ -13,7 +13,8 @@ import {
   Share, 
   Platform, 
   Dimensions, 
-  ScrollView 
+  ScrollView, 
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeContext } from '../../context/ThemeContext'; //
@@ -41,10 +42,10 @@ export default function ShareApp() {
 
       if (result.action === Share.sharedAction) {
         // Native interaction tracking
-        console.log("App Shared successfully");
+        // console.log("App Shared successfully");
       }
     } catch (error) {
-      console.error("Share error:", error.message);
+      Alert.alert("Share Error",`Error while sharing Application \n${error.message}`);
     }
   };
 

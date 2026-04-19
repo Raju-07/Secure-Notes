@@ -35,8 +35,8 @@ export default function SettingsScreen({ navigation }) {
             <SettingItem icon="color-palette-outline" title="Theme" color='#FF00AA' onPress={() => navigation.navigate("Theme")} />
             <SettingItem icon="timer-outline" title="Session" color='#F59E0B' onPress={() => navigation.navigate("Session")} />
             <SettingItem icon="shield-outline" title="Encryption" color="#6366F1" onPress={() => navigation.navigate("Encryption")} />
-            <SettingItem icon="information-circle-outline" title="About Us" color="#3B82F6" onPress={() => navigation.navigate("About")} />
             <SettingItem icon="chatbubble-ellipses-outline" title="Feedback" color="#06B6D4" onPress={() => navigation.navigate("Feedback")} />
+            <SettingItem icon="information-circle-outline" title="About Us" color="#3B82F6" onPress={() => navigation.navigate("About")} />
             <SettingItem icon="share-social-outline" title="Share App" color="#8B5CF6" onPress={() => navigation.navigate("Share")} isLast={true} />
           </View>
 
