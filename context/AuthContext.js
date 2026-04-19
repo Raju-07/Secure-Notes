@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
-import { AppState } from "react-native"; 
+import { Alert, AppState } from "react-native"; 
 import * as LocalAuthentication from 'expo-local-authentication'; 
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { SecureStorage } from "../services/SecureStorage";
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     const appState = useRef(AppState.currentState);
     const backgroundTime = useRef(null);
 
-    // --- NEW SESSION STATES ---
+    //  NEW SESSION STATES
     const [isSessionEnabled, setIsSessionEnabled] = useState(false);
     const [sessionDuration, setSessionDuration] = useState(3600); // Default 1 hour
     const sessionStartTime = useRef(Date.now()); // Mark launch time
@@ -41,13 +41,13 @@ export const AuthProvider = ({ children }) => {
                 if (bfEnabled !== null) setIsBruteForceEnabled(bfEnabled === 'true');
 
             } catch (e) {
-                console.error("Failed to load auth settings", e);
+                Alert.alert("Auth Failed",`Failed to load auth settings \n${e}`)
             }
         };
         loadSettings();
     }, []);
 
-    // --- NEW SESSION FUNCTIONS ---
+    //  NEW SESSION FUNCTIONS 
     const toggleSessionEnabled = async () => {
         const newValue = !isSessionEnabled;
         setIsSessionEnabled(newValue);
@@ -71,15 +71,15 @@ export const AuthProvider = ({ children }) => {
         await AsyncStorage.setItem('lockDelay', seconds.toString());
     };
 
-    // --- SESSION HEARTBEAT ---
-    useEffect(() => {
+    //  SESSION HEARTBEAT
+        useEffect(() => {
         let interval;
         if (isSessionEnabled) {
             interval = setInterval(() => {
                 const elapsed = (Date.now() - sessionStartTime.current) / 1000;
                 if (elapsed >= sessionDuration) {
                     setIsLocked(true);
-                    console.log("Session Timeout Reached.");
+                    Alert.alert("Timeout","Session Timeout Reached")
                 }
             }, 30000); // Check every 30 seconds
         }
@@ -109,6 +109,7 @@ export const AuthProvider = ({ children }) => {
 
     const toggleBruteForce = async () => {
         const newValue = !isBruteForceEnabled;
+        setIsBruteForceEnabled(newValue);
         await AsyncStorage.setItem('isBruteForceEnabled',newValue.toString());
     };
 
@@ -129,8 +130,6 @@ export const AuthProvider = ({ children }) => {
             if (result.success) {
                 setIsLocked(false);
                 backgroundTime.current = null;
-                // Important: We DON'T reset sessionStartTime here. 
-                // A session lasts across unlocks until the app is fully closed.
                 setFailedAttempts(0);
             } else {
                 const newFailCount = failedAttempts + 1;
@@ -142,7 +141,7 @@ export const AuthProvider = ({ children }) => {
                 }
             }
         } catch (error) {
-            console.error("Auth error", error);
+            Alert.alert("Auth Error", `authentication Failed due to \n${error}`);
         };
     };
 
@@ -150,7 +149,8 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{ 
             isLocked, setIsLocked, handleUnlock, 
             isLockEnabled, toggleLockEnabled, lockDelay, updateLockDelay,
-            isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration
+            isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration,
+            isBruteForceEnabled, toggleBruteForce
         }}>
             {children}
         </AuthContext.Provider>

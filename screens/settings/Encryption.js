@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { SecureStorage } from '../../services/SecureStorage';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function Encryption() {
+export default function Encryption({navigation}) {
     const { colors } = useContext(ThemeContext);
     const { isBruteForceEnabled, toggleBruteForce } = useContext(AuthContext);
     const [storageUsed, setStorageUsed] = useState(0);
@@ -30,7 +30,19 @@ export default function Encryption() {
                 { 
                     text: "Delete Everything", 
                     style: "destructive", 
-                    onPress: async () => await SecureStorage.deleteAllNotes() 
+                    onPress: async () => {
+                        await SecureStorage.deleteAllNotes();
+                        Alert.alert(
+                            "Data Wiped Successfully",
+                            "All your encrypted notes have been permanently deleted.Data will be refresh shortly",
+                            [
+                                {
+                                    text: "OK",
+                                    onPress: () => navigation.navigate("Home")
+                                }
+                            ]
+                        );
+                    }
                 }
             ]
         );

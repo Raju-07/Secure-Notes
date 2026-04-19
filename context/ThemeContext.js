@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react"; 
-import { useColorScheme } from "react-native";  //get system theme 'light' or 'dark'
+import { Alert, useColorScheme } from "react-native";  //get system theme 'light' or 'dark'
 import AsyncStorage from "@react-native-async-storage/async-storage"; //Store Theme
 
 export const ThemeContext = createContext();
@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children }) => {
                     setTheme(savedTheme);
                 }
             } catch (error) {
-                console.log("Error loading theme", error);
+                Alert.alert("Loading Failed",`Error while loading theme \n${error}`);
             }
         };
         loadTheme(); 

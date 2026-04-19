@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'; // IMPORT DefaultTheme
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,20 +14,21 @@ import ShareScreen from '../screens/settings/ShareApp';
 import AboutScreen from '../screens/settings/AboutScreen';
 import FeedbackScreen from '../screens/settings/Feedback';
 import AppTheme from '../screens/settings/Theme';
-import { ThemeContext, ThemeProvider } from '../context/ThemeContext';  // imported Theme Provider
+import { ThemeContext, ThemeProvider } from '../context/ThemeContext'; 
 import { useContext } from 'react';
 import LockScreen from '../screens/ScreenLock';
-import { AuthContext,AuthProvider } from '../context/AuthContext';
+import { AuthContext, AuthProvider } from '../context/AuthContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function SettingsStack(){
-    const {colors} = useContext(ThemeContext);
+    const { colors } = useContext(ThemeContext);
     return (
         <Stack.Navigator screenOptions={{
             headerStyle: { backgroundColor: colors.card },
             headerTintColor: colors.text,
+            contentStyle: { backgroundColor: colors.background },
         }}>
             <Stack.Screen name="Setting" component={SettingsScreen} options={{headerShown:false}} />
             <Stack.Screen name="Lock" component={Lock} options={{title:"Application Lock"}} />
@@ -42,8 +43,16 @@ function SettingsStack(){
 }
 
 function MainApp() {
-  const { activeTheme,colors } = useContext(ThemeContext);
-  const {isLocked } = useContext(AuthContext);
+  const { activeTheme, colors } = useContext(ThemeContext);
+  const { isLocked } = useContext(AuthContext);
+
+  const navTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: colors.background, 
+    },
+  };
 
   if (isLocked) {
     return (
@@ -51,12 +60,11 @@ function MainApp() {
         <StatusBar style={activeTheme === 'dark' ? 'light':'dark'} />
         <LockScreen/>
       </SafeAreaView>
-
     )
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <StatusBar style={activeTheme === 'dark' ? 'light' : 'dark'}/>
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
           <Tab.Navigator

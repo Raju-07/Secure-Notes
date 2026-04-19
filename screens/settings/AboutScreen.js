@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeContext } from '../../context/ThemeContext';
 import { useContext } from 'react';
@@ -11,7 +11,7 @@ export default function AboutScreen() {
 
       <View style={[styles.hero,{backgroundColor:colors.primary}]}>
         <View style={styles.logo}>
-          <Ionicons name="shield-checkmark" size={32} color={colors.icon} />
+          <Ionicons name="shield-checkmark" size={32} color="#fff" />
         </View>
 
         <Text style={[styles.appName]}>Secure Notes</Text>
@@ -48,13 +48,13 @@ export default function AboutScreen() {
       <View style={[styles.card,{backgroundColor:colors.card}]}>
         <Text style={[styles.heading,{color:colors.text}]}>Developers</Text>
 
-        <Text style={[styles.name,{color:colors.text}]}>Raju Yadav</Text>
+        <TouchableOpacity onPress={()=> Linking.openURL("https://github.com/raju-07")}><Text style={[styles.name,{color:"#e09b06"}]}>Raju Yadav    <Ionicons name='logo-github'/></Text></TouchableOpacity>
         <Text style={[styles.role,{color:colors.textMuted}]}>App Developer</Text>
 
-        <Text style={[styles.name,{color:colors.text}]}>Raja Singh Rajput</Text>
+        <TouchableOpacity onPress={()=> Linking.openURL("https://github.com/rajasinghrajpoot")}><Text style={[styles.name,{color:colors.text}]}>Raja Singh Rajput    <Ionicons name='logo-github'/></Text></TouchableOpacity>
         <Text style={[styles.role,{color:colors.textMuted}]}>UX Designer</Text>
 
-        <Text style={[styles.name,{color:colors.text}]}>Prachi Jaswal</Text>
+        <TouchableOpacity onPress={()=> Linking.openURL("https://github.com/prachi-jaswal")}><Text style={[styles.name,{color:"#00ff22"}]}>Prachi Jaswal    <Ionicons name='logo-github'/></Text></TouchableOpacity>
         <Text style={[styles.role,{color:colors.textMuted}]}>UI/UX Designer</Text>
       </View>
 
