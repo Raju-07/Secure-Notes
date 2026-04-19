@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     const appState = useRef(AppState.currentState);
     const backgroundTime = useRef(null);
 
-    // --- NEW SESSION STATES ---
+    //  NEW SESSION STATES
     const [isSessionEnabled, setIsSessionEnabled] = useState(false);
     const [sessionDuration, setSessionDuration] = useState(3600); // Default 1 hour
     const sessionStartTime = useRef(Date.now()); // Mark launch time
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         loadSettings();
     }, []);
 
-    // --- NEW SESSION FUNCTIONS ---
+    //  NEW SESSION FUNCTIONS 
     const toggleSessionEnabled = async () => {
         const newValue = !isSessionEnabled;
         setIsSessionEnabled(newValue);
@@ -71,8 +71,8 @@ export const AuthProvider = ({ children }) => {
         await AsyncStorage.setItem('lockDelay', seconds.toString());
     };
 
-    // --- SESSION HEARTBEAT ---
-    useEffect(() => {
+    //  SESSION HEARTBEAT
+        useEffect(() => {
         let interval;
         if (isSessionEnabled) {
             interval = setInterval(() => {
@@ -109,6 +109,7 @@ export const AuthProvider = ({ children }) => {
 
     const toggleBruteForce = async () => {
         const newValue = !isBruteForceEnabled;
+        setIsBruteForceEnabled(newValue);
         await AsyncStorage.setItem('isBruteForceEnabled',newValue.toString());
     };
 
@@ -129,8 +130,6 @@ export const AuthProvider = ({ children }) => {
             if (result.success) {
                 setIsLocked(false);
                 backgroundTime.current = null;
-                // Important: We DON'T reset sessionStartTime here. 
-                // A session lasts across unlocks until the app is fully closed.
                 setFailedAttempts(0);
             } else {
                 const newFailCount = failedAttempts + 1;
@@ -150,7 +149,8 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{ 
             isLocked, setIsLocked, handleUnlock, 
             isLockEnabled, toggleLockEnabled, lockDelay, updateLockDelay,
-            isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration
+            isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration,
+            isBruteForceEnabled, toggleBruteForce
         }}>
             {children}
         </AuthContext.Provider>
