@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.rajuyadav07.SecureNotes"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -28,7 +29,13 @@
     "plugins": [
       "expo-secure-store",
       "@react-native-community/datetimepicker",
-      "expo-mail-composer"
-    ]
+      "expo-mail-composer",
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9a25614c-a383-43fc-a78d-c61022f73adc"
+      }
+    }
   }
 }
