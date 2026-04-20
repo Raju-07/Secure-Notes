@@ -7,7 +7,7 @@
     "icon": "assets/_Shield_Logo.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/_Shield_Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/_Shield_Logo.png",
+        "backgroundImage": "./assets/_Shield_Logo.png",
+        "monochromeImage": "./assets/_Shield_Logo.png"
       },
       "package": "com.rajuyadav07.SecureNotes"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/_Shield_Logo.png"
     },
     "plugins": [
       "expo-secure-store",
