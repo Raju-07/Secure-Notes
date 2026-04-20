@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from "react-native-date-picker";
 
 // label tags
 const KEYS = {
@@ -121,8 +121,7 @@ export default function HomeScreen() {
   const [totpSeconds,      setTotpSeconds]      = useState(30);
 
   // Date Picker State
-  const [showPicker, setShowPicker] = useState(false);
-  const [pickerMode, setPickerMode] = useState('date');
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   const slideAni = useRef(new Animated.Value(0)).current;
 
@@ -293,21 +292,23 @@ export default function HomeScreen() {
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.cardHeaderRow}>
-            <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={1}>{item.title}</Text>
-            {activeSection === 'all' && (
+            <Text style={[styles.cardTitle, { color: colors.text,flexShrink:1, marginRight:2 }]} numberOfLines={1}>{item.title}</Text>
+            {activeSection === 'all' && !isGridView && (
               <View style={[styles.typeBadge, { backgroundColor: cfg.color + '15' }]}>
                 <Text style={{ fontSize: 9, color: cfg.color, fontWeight: '800' }}>{cfg.label.toUpperCase()}</Text>
               </View>
             )}
           </View>
-          <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 2 }} numberOfLines={1}>{subtitle}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+            <Text style={{ color: colors.textMuted, fontSize: 12, flexShrink: 1 }} numberOfLines={1}>{subtitle}</Text>
+            <Ionicons name="chevron-forward" size={12} color={colors.textMuted} style={{ marginLeft: 4 }} />
+          </View>
           {type === 'reminders' && (
             <View style={[styles.doneBadge, { backgroundColor: item.done ? '#43C6AC22' : '#E040FB22' }]}>
               <Text style={{ fontSize: 10, fontWeight: '700', color: item.done ? '#43C6AC' : '#E040FB' }}>{item.done ? '✓ Done' : '● Pending'}</Text>
             </View>
           )}
         </View>
-        <Ionicons name="chevron-forward" size={16} color={colors.textMuted} style={{ marginLeft: 8 }} />
       </Pressable>
     );
   };
@@ -348,16 +349,17 @@ export default function HomeScreen() {
                 <Text style={{ color: colors.text }}>{formatDateTime(displayDate.getTime())}</Text>
               </View>
             ) : (
-              <View style={styles.dateTimeRow}>
-                <Pressable onPress={() => { setPickerMode('date'); setShowPicker(true); haptic(); }} style={[styles.selectorBtn, { backgroundColor: colors.card, borderColor: colors.borderColor }]}>
-                  <Ionicons name="calendar-outline" size={18} color={colors.primary} />
-                  <Text style={{ color: colors.text, marginLeft: 8 }}>{formatDate(displayDate)}</Text>
-                </Pressable>
-                <Pressable onPress={() => { setPickerMode('time'); setShowPicker(true); haptic(); }} style={[styles.selectorBtn, { backgroundColor: colors.card, borderColor: colors.borderColor }]}>
-                  <Ionicons name="time-outline" size={18} color={colors.primary} />
-                  <Text style={{ color: colors.text, marginLeft: 8 }}>{displayDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                </Pressable>
-              </View>
+              <Pressable 
+                onPress={() => {
+                  haptic();
+                  setIsDatePickerOpen(true); // Triggers the new modal
+                }} 
+                style={[styles.inputRow, { borderColor: colors.borderColor, paddingVertical: 12 }]}>
+                <Ionicons name="calendar-outline" size={20} color={colors.primary} />
+                <Text style={{ color: colors.text, marginLeft: 10, fontSize: 16 }}>
+                  {formatDateTime(displayDate.getTime())}
+                </Text>
+              </Pressable>
             )}
           </View>
 
@@ -373,9 +375,22 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {showPicker && (
-            <DateTimePicker value={displayDate} mode={pickerMode} is24Hour={true} display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={onPickerChange} />
-          )}
+          {/* THE NEW STABLE DATE PICKER MODAL */}
+          <DatePicker
+            modal
+            open={isDatePickerOpen}
+            date={displayDate}
+            mode="datetime"
+            theme={activeTheme === 'dark' ? 'dark' : 'light'}
+            onConfirm={(date) => {
+              setIsDatePickerOpen(false); // Closes modal
+              const key = currentType === 'events' ? 'eventDate' : 'remindAt';
+              setForm(f => ({ ...f, [key]: date.toISOString() })); // Saves date
+            }}
+            onCancel={() => {
+              setIsDatePickerOpen(false); // Closes modal on cancel
+            }}
+          />
         </>
       );
       case 'passkeys': return (
@@ -501,7 +516,7 @@ const styles = StyleSheet.create({
   gridCard: { width: '48%', padding: 18, borderRadius: 18, marginBottom: 14, alignItems: 'center', elevation: 2, borderWidth: 1 },
   iconBox: { width: 44, height: 44, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   cardTitle: { fontSize: 15, fontWeight: '700' },
-  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1 },
+  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width:"100%" },
   typeBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   doneBadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20, marginTop: 5 },
   emptyContainer: { flex: 1, alignItems: 'center', marginTop: 80 },
