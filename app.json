@@ -24,7 +24,7 @@
       "package": "com.rajuyadav07.SecureNotes"
     },
     "web": {
-      "favicon": "./assets/_Shield_Logo.png"
+      "favicon": "./assets/favicon1.png"
     },
     "plugins": [
       "expo-secure-store",
