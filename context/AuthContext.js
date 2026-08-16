@@ -8,7 +8,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     // Existing States
-    const [isLocked, setIsLocked] = useState(false);
+    const [isLocked, setIsLocked] = useState(true); // true -> auth before access main app
     const [isLockEnabled, setIsLockedEnabled] = useState(true);
     const [lockDelay, setLockDelay] = useState(10);
     const appState = useRef(AppState.currentState);
