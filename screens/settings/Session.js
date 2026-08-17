@@ -15,6 +15,14 @@ export default function Session() {
         { label: '4 Hours', value: 14400 },
     ];
 
+    const getFormattedDuration = (seconds) => {
+        if (seconds < 3600) {
+            return `${Math.round(seconds / 60)} minutes`;
+        }
+        const hours = seconds / 3600;
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    };
+
     return (
         <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={[styles.infoCard, { backgroundColor: colors.primary + '15' }]}>
@@ -63,7 +71,7 @@ export default function Session() {
                     <View style={styles.footer}>
                         <Ionicons name="shield-checkmark" size={16} color={colors.primary} />
                         <Text style={[styles.footerText, { color: colors.textMuted }]}>
-                            Next forced lock: After {sessionDuration / 3600} hours of use.
+                            Next forced lock: After {getFormattedDuration(sessionDuration)} of use.
                         </Text>
                     </View>
                 </View>
