@@ -63,7 +63,6 @@ const SECTIONS = [
   { id: 'events',    label: 'Events',   icon: 'calendar-outline',       filledIcon: 'calendar',           color: '#43C6AC' },
   { id: 'passkeys',  label: 'PassKey',  icon: 'key-outline',            filledIcon: 'key',                color: '#F7971E' },
   { id: 'reminders', label: 'Remind',   icon: 'alarm-outline',          filledIcon: 'alarm',              color: '#E040FB' },
-  { id: 'drafts',    label: 'Draft',    icon: 'mail-outline',           filledIcon: 'mail',               color: '#ccd63d'  }
 ];
 
 
@@ -126,7 +125,6 @@ export default function HomeScreen() {
   const [events,    setEvents]    = useState([]);
   const [passkeys,  setPasskeys]  = useState([]);
   const [reminders, setReminders] = useState([]);
-  const [drafts,    setDrafts]    = useState([]);
 
   const [detailItem,       setDetailItem]       = useState(null);
   const [isDetailVisible,  setIsDetailVisible]  = useState(false);
@@ -181,7 +179,6 @@ export default function HomeScreen() {
       const savedDraft = await SecureStorage.getDraft();
       // Restoring the draft item on relaunch
       if (savedDraft) {
-        console.log("found some drafts file")
         showCustomAlert(
           'Unsaved Draft Found',
           'You have an unsaved item from your last session. Would you like to restore it ?',
@@ -207,7 +204,6 @@ export default function HomeScreen() {
     const handleAppStateChange = async (nextAppState) => {
       // if app goes to bg or becomes inactive i.e. setFailedAttempts
       if (nextAppState === 'background' || nextAppState === 'inactive'){
-        console.log('Application is running in the bg')
         if (draftRef.current){
           await SecureStorage.savedDraft(draftRef.current);
         }
@@ -562,31 +558,46 @@ export default function HomeScreen() {
           </View>
         </View>
         {/* 2. UPDATED TAB BAR */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ maxHeight: 60,minHeight:60,flexShrink:0}} contentContainerStyle={styles.tabBar}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.tabScrollView} 
+          contentContainerStyle={styles.tabBar}
+        >
           {SECTIONS.map(s => {
             const isActive = activeSection === s.id;
             return (
-                <Pressable 
-                    key={s.id} 
-                    onPress={() => { haptic(); setActiveSection(s.id); }} 
-                    style={[
-                        styles.tab, 
-                        { backgroundColor: isActive ? s.color + '15' : colors.card }
-                    ]}
-                >
+              <Pressable 
+                key={s.id} 
+                onPress={() => { haptic(); setActiveSection(s.id); }} 
+                style={[
+                  styles.tab, 
+                  { 
+                    backgroundColor: isActive 
+                      ? (activeTheme === 'dark' ? s.color + '25' : s.color + '15')
+                      : colors.card,
+                    borderColor: isActive 
+                      ? s.color 
+                      : colors.borderColor,
+                  }
+                ]}
+              >
                 <Ionicons 
-                    name={isActive ? s.filledIcon : s.icon} 
-                    size={16} 
-                    color={isActive ? s.color : colors.textMuted} 
+                  name={isActive ? s.filledIcon : s.icon} 
+                  size={16} 
+                  color={isActive ? s.color : colors.textMuted} 
                 />
                 <Text style={[
-                    styles.tabLabel, 
-                    { color: isActive ? s.color : colors.textMuted, fontWeight: isActive ? '700' : '500' }
+                  styles.tabLabel, 
+                  { 
+                    color: isActive ? s.color : colors.textMuted, 
+                    fontWeight: isActive ? '700' : '600' 
+                  }
                 ]}>
-                    {s.label}
+                  {s.label}
                 </Text>
-                </Pressable>
-            )
+              </Pressable>
+            );
           })}
         </ScrollView>
 
@@ -741,9 +752,7 @@ const styles = StyleSheet.create({
   headerText: { fontSize: 30, fontWeight: 'bold', marginHorizontal: 20 },
   actionIcons: { flexDirection: 'row', marginTop: 4 },
   iconButton: { marginLeft: 14, padding: 6 },
-  tabBar: {paddingHorizontal:20,paddingVertical:10,gap:10},
-  tab: {  flexDirection:'row',alignItems:'center',paddingHorizontal: 16, paddingVertical: 10, gap: 6,borderRadius:12,elevation:1,shadowColor:'#000',shadowOffset:{width:0,height:1},shadowOpacity:0.05,shadowRadius:3,  },
-  tabLabel: { fontSize: 13, fontWeight: '600' },
+  tabLabel: { fontSize: 13, fontWeight: '600',letterSpacing: -0.2 },
   scrollBody: { paddingHorizontal: 20 },
   gridBody: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 15, justifyContent: 'space-between' },
   card: { flexDirection: 'row', padding: 16, borderRadius: 16, marginBottom: 14, alignItems: 'center', elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset:{width:0,height:2}},
@@ -791,7 +800,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   detailSheet: {
-    height: '92%', // Covers most of the screen but leaves the top visible
+    height: '85%', // Covers most of the screen but leaves the top visible
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     overflow: 'hidden',
@@ -867,5 +876,30 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
+  tabScrollView: {
+  maxHeight: 56,
+  minHeight: 56,
+  flexShrink: 0,
+},
+tabBar: {
+  paddingHorizontal: 20,
+  alignItems: 'center',
+  gap: 8,
+},
+tab: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingHorizontal: 14,
+  paddingVertical: 8,
+  gap: 6,
+  borderRadius: 12,
+  borderWidth: 1,
+  // Subtle shadow for clean depth without muddy artifacts
+  shadowColor: '#00000046',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 2,
+  elevation: 1,
+},
 
 });

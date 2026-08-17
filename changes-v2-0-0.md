@@ -13,11 +13,11 @@ when enabled it doesn't select a default time for lock [fixed: 16 Aug 2026]
 when we right long notes content get hide under keyboard so we can't see  what' we are typing must introduce scrolling in the page [fixed: 16 Aug, 2026]
 
 5. Draft
-   When we write anything and suddenly application get close our work should be save instead of being vanished
+   When we write anything and suddenly application get close our work should be save instead of being vanished [fiex: 17 Aug, 2026 ]
 6. Security
-   when app get close and from recent apps it doesn't hide the contents of the screen
+   when app get close and from recent apps it doesn't hide the contents of the screen [Fixed 17 Aug, 2026]
 7. UI
-   change the edit button color to primary in light theme
+   change the edit button color to primary in light theme [fixed 17 Aug, 2026]
 8. Add function to export all data (i.e. password, notes,etc)
 9. Password Generator
 10. change the system info showing ui better i.e. System timeout, session timeout.

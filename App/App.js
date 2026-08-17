@@ -19,6 +19,9 @@ import { useContext } from 'react';
 import LockScreen from '../screens/ScreenLock';
 import { AuthContext, AuthProvider } from '../context/AuthContext';
 
+// privacy Shield while close (Blue effect)
+import PrivacyShield from '../components/PrivacyShield';
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -98,7 +101,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-       <MainApp />
+        <PrivacyShield>
+          <MainApp />
+        </PrivacyShield>
       </AuthProvider>
     </ThemeProvider>
   );
