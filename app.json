@@ -17,7 +17,8 @@
         "NSFaceIDUsageDescription": "Allow Secure Notes to use Face ID for Authentication and unlock your Secure Vault.",
         "NSLocalizationNativeDeviceModel": true
       },
-      "buildNumber": "2.0.0"
+      "buildNumber": "2.0.0",
+      "bundleIdentifier": "com.rajuyadav07.SecureNotes"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,9 @@
       "package": "com.rajuyadav07.SecureNotes",
       "permissions": [
         "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "USE_FINGERPRINT",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ],
       "intentFilters": [
         {
