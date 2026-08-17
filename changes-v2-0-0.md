@@ -21,5 +21,5 @@ when we right long notes content get hide under keyboard so we can't see  what' 
 8. Add function to export all data (i.e. password, notes,etc)
 9. Password Generator [implemented: 17 Aug, 2026]
 10. change the system info showing ui better i.e. System timeout, session timeout. [fixed 17 Aug, 2026]
-11. Once the session timeout then in every few seconds 3 - 10 seconds. it's redirect to the lock sreen but we need after unlocking it we need to reset the session time.
+11. Once the session timeout then in every few seconds 3 - 10 seconds. it's redirect to the lock sreen but we need after unlocking it we need to reset the session time.  [fixed 17, Aug 2026]
 12.

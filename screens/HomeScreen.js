@@ -8,13 +8,13 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeContext } from '../context/ThemeContext';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DatePicker from "react-native-date-picker";
 import * as LocalAuthentication from "expo-local-authentication"
 //password Generator
 import PasswordGeneratorModal from "../components/PasswordGeneratorModal";
+import CustomAlert from '../components/CustomAlert';
 
 // label tags
 const KEYS = {
@@ -150,7 +150,7 @@ export default function HomeScreen() {
   ).current;
 
   // DRAFT CACHE System
-  const draftRef = useState(null);
+  const draftRef = useRef(null);
 
   // keeping the ref updated with the latest form data to avoid stale closures in the AppState Listener
   useEffect(()=> {
@@ -287,7 +287,11 @@ export default function HomeScreen() {
   };
 
   const handleDelete = () => {
-    // Replaces the OS confirm dialog with our custom danger dialog
+  // Close the detail modal first to avoid modal stacking issues on iOS
+  setIsDetailVisible(false);
+  
+  // Show the custom alert after a small delay to ensure the detail modal is closed
+  setTimeout(() => {
     showCustomAlert(
       'Delete Item?', 
       'Are you sure you want to permanently delete this item? This action cannot be undone.', 
@@ -303,11 +307,12 @@ export default function HomeScreen() {
           case 'passkeys': { const l = passkeys.filter(x => x.id !== id); await SecureStorage.savePassKeys(l); setPasskeys(l); break; }
           case 'reminders': { const l = reminders.filter(x => x.id !== id); await SecureStorage.saveReminders(l); setReminders(l); break; }
         }
-        setIsDetailVisible(false);
+        setDetailItem(null);
       },
       'Delete'
     );
-  };
+  }, 300);
+};
 
   const toggleReminderStatus = async (item, newValue) => {
     const updated = { ...item, done: newValue };
@@ -318,23 +323,30 @@ export default function HomeScreen() {
   };
 
   // --- CUSTOM ALERT STATE ---
-  const [alertConfig, setAlertConfig] = useState({
+  const [alertState, setAlertState] = useState({
     visible: false,
     title: '',
     message: '',
-    type: 'info', // 'info', 'warning', 'danger'
+    type: 'info',
     onConfirm: null,
     showCancel: false,
     confirmText: 'OK',
   });
 
   const showCustomAlert = (title, message, type = 'info', showCancel = false, onConfirm = null, confirmText = 'OK') => {
-    setAlertConfig({ visible: true, title, message, type, showCancel, onConfirm, confirmText });
-    haptic();
+    setAlertState({ 
+      visible: true, 
+      title, 
+      message, 
+      type, 
+      showCancel, 
+      onConfirm, 
+      confirmText 
+    });
   };
 
-  const hideAlert = () => setAlertConfig(prev => ({ ...prev, visible: false }));
-
+  const hideAlert = () => setAlertState(prev => ({ ...prev, visible: false }));
+  
   const currentData = (() => {
     const combined = [
       ...notes.map(i => ({ ...i, type: 'notes' })),
@@ -697,50 +709,28 @@ export default function HomeScreen() {
       </Modal>
 
 
-      {/* PHASE 2.5: CUSTOM THEMED ALERT MODAL */}
-      <Modal visible={alertConfig.visible} transparent animationType="fade">
-        <View style={styles.alertBackdrop}>
-          <View style={[styles.alertCard, { backgroundColor: colors.card }]}>
-            
-            <View style={[
-                styles.alertIconBg, 
-                { backgroundColor: alertConfig.type === 'danger' ? '#FF658415' : alertConfig.type === 'warning' ? '#F7971E15' : colors.primary + '15' }
-            ]}>
-              <Ionicons 
-                  name={alertConfig.type === 'danger' ? 'trash' : alertConfig.type === 'warning' ? 'warning' : 'information-circle'} 
-                  size={32} 
-                  color={alertConfig.type === 'danger' ? '#FF6584' : alertConfig.type === 'warning' ? '#F7971E' : colors.primary} 
-              />
-            </View>
-
-            <Text style={[styles.alertTitle, { color: colors.text }]}>{alertConfig.title}</Text>
-            <Text style={[styles.alertMessage, { color: colors.textMuted }]}>{alertConfig.message}</Text>
-
-            <View style={styles.alertButtonGroup}>
-              {alertConfig.showCancel && (
-                <Pressable 
-                    onPress={hideAlert} 
-                    style={[styles.alertBtn, { backgroundColor: colors.textMuted + '15', marginRight: 12 }]}
-                >
-                  <Text style={[styles.alertBtnText, { color: colors.text }]}>Cancel</Text>
-                </Pressable>
-              )}
-              <Pressable 
-                  onPress={() => {
-                    if (alertConfig.onConfirm) alertConfig.onConfirm();
-                    hideAlert();
-                  }} 
-                  style={[
-                      styles.alertBtn, 
-                      { backgroundColor: alertConfig.type === 'danger' ? '#FF6584' : colors.primary }
-                  ]}
-              >
-                <Text style={[styles.alertBtnText, { color: '#FFF' }]}>{alertConfig.confirmText}</Text>
-              </Pressable>
-            </View>
-
-          </View>
-        </View>
+      {/* PHASE 2.5: GLASSY CUSTOM THEMED ALERT MODAL */}
+      <Modal 
+        visible={alertState.visible} 
+        transparent 
+        animationType="fade"
+        statusBarTranslucent={true}
+      >
+        {/* Custom Alert Component */}
+          <CustomAlert
+            visible={alertState.visible}
+            title={alertState.title}
+            message={alertState.message}
+            type={alertState.type}
+            onConfirm={() => {
+              if (alertState.onConfirm) alertState.onConfirm();
+              hideAlert();
+            }}
+            onCancel={hideAlert}
+            confirmText={alertState.confirmText}
+            showCancel={alertState.showCancel}
+            theme={activeTheme}
+          />
       </Modal>
     </View>
   );
@@ -820,62 +810,90 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
 
-  // --- CUSTOM ALERT STYLES ---
-  alertBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  alertCard: {
-    width: '100%',
-    maxWidth: 340,
-    borderRadius: 28,
-    padding: 24,
-    alignItems: 'center',
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-  },
-  alertIconBg: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  alertTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  alertMessage: {
-    fontSize: 14,
-    lineHeight: 22,
-    textAlign: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 10,
-  },
-  alertButtonGroup: {
-    flexDirection: 'row',
-    width: '100%',
-  },
-  alertBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  alertBtnText: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
+  // --- GLASSY CUSTOM ALERT STYLES ---
+alertBackdrop: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 24,
+  backgroundColor: 'rgba(0, 0, 0, 0.69)',
+},
+alertWrapper: {
+  width: '100%',
+  maxWidth: 340,
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 1,
+},
+alertCard: {
+  width: '100%',
+  borderRadius: 28,
+  padding: 28,
+  alignItems: 'center',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 10 },
+  shadowOpacity: 0.2,
+  shadowRadius: 30,
+  elevation: 20,
+  overflow: 'hidden',
+},
+alertIconBg: {
+  width: 64,
+  height: 64,
+  borderRadius: 32,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: 16,
+  zIndex: 1,
+},
+alertTitle: {
+  fontSize: 20,
+  color:'red',
+  fontWeight: '700',
+  marginBottom: 8,
+  textAlign: 'center',
+  zIndex: 1,
+  letterSpacing: -0.3,
+},
+alertMessage: {
+  fontSize: 14,
+  lineHeight: 22,
+  textAlign: 'center',
+  marginBottom: 24,
+  paddingHorizontal: 10,
+  zIndex: 1,
+},
+alertButtonGroup: {
+  flexDirection: 'row',
+  width: '100%',
+  gap: 10,
+  zIndex: 1,
+},
+alertBtn: {
+  flex: 1,
+  paddingVertical: 14,
+  borderRadius: 16,
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: 50,
+},
+alertBtnCancel: {
+  borderWidth: 1,
+  borderColor: 'rgba(0,0,0,0.08)',
+},
+alertBtnConfirm: {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 8,
+  elevation: 4,
+},
+alertBtnText: {
+  fontSize: 15,
+  fontWeight: '600',
+  letterSpacing: -0.2,
+},
+
   tabScrollView: {
   maxHeight: 56,
   minHeight: 56,

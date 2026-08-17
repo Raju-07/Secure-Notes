@@ -2,8 +2,11 @@ import React, { createContext, useState, useEffect, useRef } from "react";
 import { Alert, AppState } from "react-native"; 
 import * as LocalAuthentication from 'expo-local-authentication'; 
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
+import CustomAlert from "../components/CustomAlert";
 
 export const AuthContext = createContext();
+
+
 
 export const AuthProvider = ({ children }) => {
     const [isLocked, setIsLocked] = useState(true);
@@ -22,6 +25,32 @@ export const AuthProvider = ({ children }) => {
     const resetSessionTimer = () => {
         sessionStartTime.current = Date.now();
     };
+
+    // Alert State for CustomAlert
+    const [alertState, setAlertState] = useState({
+        visible: false,
+        title: '',
+        message: '',
+        type: 'info',
+        onConfirm: null,
+        showCancel: false,
+        confirmText: 'OK',
+    });
+
+    // Custom Alert Functions
+    const showCustomAlert = (title, message, type = 'info', showCancel = false, onConfirm = null, confirmText = 'OK') => {
+        setAlertState({ 
+            visible: true, 
+            title, 
+            message, 
+            type, 
+            showCancel, 
+            onConfirm, 
+            confirmText 
+        });
+    };
+
+    const hideAlert = () => setAlertState(prev => ({ ...prev, visible: false }));
 
     // Detect Biometric Hardware Type
     useEffect(() => {
@@ -57,8 +86,8 @@ export const AuthProvider = ({ children }) => {
                 if (sDuration !== null) setSessionDuration(parseInt(sDuration, 10));
 
                 resetSessionTimer();
-            } catch (e) {
-                Alert.alert("Auth Failed", `Failed to load auth settings \n${e}`);
+            } catch {
+                showCustomAlert("Auth Failed", 'Failed to load auth settings','danger');
             }
         };
         loadSettings();
@@ -99,7 +128,7 @@ export const AuthProvider = ({ children }) => {
                 if (elapsed >= sessionDuration) {
                     resetSessionTimer();
                     setIsLocked(true);
-                    Alert.alert("Session Expired", "Your session limit was reached. Please authenticate to continue.");
+                    showCustomAlert("Session Expired", "Your session limit was reached. Please authenticate to continue.","warning");
                 }
             }, 5000);
         }
@@ -161,18 +190,34 @@ export const AuthProvider = ({ children }) => {
                 resetSessionTimer();
             }
         } catch (error) {
-            Alert.alert("Auth Error", `Authentication Failed: \n${error}`);
+            showCustomAlert("Auth Error", `Authentication Failed`,'warning');
         }
     };
 
     return (
-        <AuthContext.Provider value={{ 
-            isLocked, setIsLocked, handleUnlock, 
-            isLockEnabled, toggleLockEnabled, lockDelay, updateLockDelay,
-            isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration,
-            biometricType, resetSessionTimer
-        }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    <AuthContext.Provider value={{ 
+        isLocked, setIsLocked, handleUnlock, 
+        isLockEnabled, toggleLockEnabled, lockDelay, updateLockDelay,
+        isSessionEnabled, toggleSessionEnabled, sessionDuration, updateSessionDuration,
+        biometricType, resetSessionTimer
+    }}>
+        {children}
+        
+        {/* Custom Alert Component */}
+        <CustomAlert
+            visible={alertState.visible}
+            title={alertState.title}
+            message={alertState.message}
+            type={alertState.type}
+            onConfirm={() => {
+                if (alertState.onConfirm) alertState.onConfirm();
+                hideAlert();
+            }}
+            onCancel={hideAlert}
+            confirmText={alertState.confirmText}
+            showCancel={alertState.showCancel}
+            theme="dark" // or "light" - you can make this dynamic
+        />
+    </AuthContext.Provider>
+);
 };
