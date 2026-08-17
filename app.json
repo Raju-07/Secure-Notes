@@ -4,7 +4,7 @@
     "slug": "Secure-Notes",
     "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "assets/_Shield_Logo.png",
+    "icon": "./assets/_Shield_Logo.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/_Shield_Logo.png",
@@ -14,8 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Allow Secure Notes to use Face ID for Authentication and unlock your Secure Vault.",
-        "NSLocalizationNativeDeviceModel": true
+        "NSFaceIDUsageDescription": "Allow Secure Notes to use Face ID for Authentication and unlock your Secure Vault."
       },
       "buildNumber": "2.0.0",
       "bundleIdentifier": "com.rajuyadav07.SecureNotes"
@@ -24,23 +23,12 @@
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/_Shield_Logo.png",
-        "backgroundImage": "./assets/_Shield_Logo.png",
         "monochromeImage": "./assets/_Shield_Logo.png"
       },
       "package": "com.rajuyadav07.SecureNotes",
       "permissions": [
-        "USE_BIOMETRIC",
-        "USE_FINGERPRINT",
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT"
-      ],
-      "intentFilters": [
-        {
-          "action": "android.intent.action.MAIN",
-          "category": [
-            "android.intent.category.LAUNCHER"
-          ]
-        }
       ]
     },
     "web": {

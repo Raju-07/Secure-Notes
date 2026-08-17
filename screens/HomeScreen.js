@@ -11,7 +11,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DatePicker from "react-native-date-picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as LocalAuthentication from "expo-local-authentication"
 //password Generator
