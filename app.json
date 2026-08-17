@@ -12,7 +12,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow Secure Notes to use Face ID for Authentication and unlock your Secure Vault.",
+        "NSLocalizationNativeDeviceModel": true
+      },
+      "buildNumber": "2.0.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +26,19 @@
         "backgroundImage": "./assets/_Shield_Logo.png",
         "monochromeImage": "./assets/_Shield_Logo.png"
       },
-      "package": "com.rajuyadav07.SecureNotes"
+      "package": "com.rajuyadav07.SecureNotes",
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ],
+      "intentFilters": [
+        {
+          "action": "android.intent.action.MAIN",
+          "category": [
+            "android.intent.category.LAUNCHER"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon1.png"
@@ -30,7 +47,13 @@
       "expo-secure-store",
       "@react-native-community/datetimepicker",
       "expo-mail-composer",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your face data for authentication."
+        }
+      ]
     ],
     "extra": {
       "eas": {
