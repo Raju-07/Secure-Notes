@@ -13,6 +13,8 @@ import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DatePicker from "react-native-date-picker";
 import * as LocalAuthentication from "expo-local-authentication"
+//password Generator
+import PasswordGeneratorModal from "../components/PasswordGeneratorModal";
 
 // label tags
 const KEYS = {
@@ -45,14 +47,11 @@ const SecureStorage = {
 const haptic = () => { if (Platform.OS === 'ios') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); };
 const formatDate = (ts) => new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 const formatDateTime = (ts) => new Date(ts).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-// Time based OTP
-const generateTOTP = (secret) => {
-  const time = Math.floor(Date.now() / 30000);
-  let hash = 0;
-  const str = secret + time;
-  for (let i = 0; i < str.length; i++) { hash = (Math.imul(31, hash) + str.charCodeAt(i)) | 0; }
-  return String(Math.abs(hash) % 1000000).padStart(6, '0');
+// psw generator helper function
+const handleSaveGeneratedPassword = async (newPasswordItem) => {
+  const updatedList = [newPasswordItem, ...passwords];
+  await SecureStorage.savePasswords(updatedList);
+  setPasswords(updatedList);
 };
 
 // Top Bar different options and themes color
@@ -616,6 +615,7 @@ export default function HomeScreen() {
       <Pressable style={[styles.fab, { backgroundColor: activeSection === 'all' ? colors.primary : sc?.color }]} onPress={openFab}>
         <Ionicons name="add" size={32} color="white" />
       </Pressable>
+      <PasswordGeneratorModal onSaved={(updatedPasswords) => setPasswords(updatedPasswords)} />
 
       <Modal visible={isModalVisible} transparent animationType="none" onRequestClose={closeFab}>
         <View style={styles.backdrop}>
