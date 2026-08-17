@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { BlurView } from "expo-blur";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DatePicker from "react-native-date-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import * as LocalAuthentication from "expo-local-authentication"
 //password Generator
 import PasswordGeneratorModal from "../components/PasswordGeneratorModal";
@@ -133,7 +133,15 @@ export default function HomeScreen() {
   const [showPassword,     setShowPassword]     = useState(false);
 
   // Date Picker State
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+    const [pickerState, setPickerState] = useState({
+      visible: false,
+      mode: Platform.OS === 'ios' ? 'datetime' : 'date',
+      tempDate: new Date(),
+    });
+
+  const currentType = detailItem ? detailItem.type : activeSection;
+  const dateKey = currentType === 'events' ? 'eventDate' : 'remindAt';
+  const displayDate = form[dateKey] ? new Date(form[dateKey]) : new Date();
 
   const slideAni = useRef(new Animated.Value(0)).current;
 
@@ -457,28 +465,26 @@ export default function HomeScreen() {
     const commonProps = { viewMode, showPassword, setShowPassword, colors, form, setForm };
 
     const handleSecurePasswordToggle = async () => {
-    if (!showPassword) {
-      const auth = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Authenticate to view password',
-        fallbackLabel: 'Use Device Passcode',
-      });
-      if (auth.success) setShowPassword(true);
-      else showCustomAlert("Authentication Failed", "You must authenticate to view this secure data.", "danger");
-    } else {
-      setShowPassword(false);
-    }
-  };
+      if (!showPassword) {
+        const auth = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Authenticate to view password',
+          fallbackLabel: 'Use Device Passcode',
+        });
+        if (auth.success) setShowPassword(true);
+        else showCustomAlert("Authentication Failed", "You must authenticate to view this secure data.", "danger");
+      } else {
+        setShowPassword(false);
+      }
+    };
 
-    const dateKey = currentType === 'events' ? 'eventDate' : 'remindAt';
-    const displayDate = form[dateKey] ? new Date(form[dateKey]) : new Date();
-
-    switch (currentType) {
+        switch (currentType) {
       case 'notes': return (
         <>
           <Field label="Title" value={form.title} key_="title" placeholder="Note title" {...commonProps} />
           <Field label="Content" value={form.content} key_="content" placeholder="Write your note…" multiline {...commonProps} />
         </>
       );
+      
       case 'passwords': return (
         <>
           <Field label="Site / App Name" value={form.title} key_="title" placeholder="e.g. Google, Netflix" {...commonProps} />
@@ -487,6 +493,7 @@ export default function HomeScreen() {
           <Field label="URL (optional)" value={form.url} key_="url" placeholder="https://" keyboardType="url" {...commonProps} />
         </>
       );
+      
       case 'events':
       case 'reminders': return (
         <>
@@ -502,7 +509,11 @@ export default function HomeScreen() {
               <Pressable 
                 onPress={() => {
                   haptic();
-                  setIsDatePickerOpen(true); // Triggers the new modal
+                  setPickerState({
+                    visible:true,
+                    mode: Platform.OS === 'ios' ? 'datetime' : 'date',
+                    tempDate: displayDate,
+                  });
                 }} 
                 style={[styles.inputRow, { borderColor: colors.borderColor, paddingVertical: 12 }]}>
                 <Ionicons name="calendar-outline" size={20} color={colors.primary} />
@@ -524,25 +535,9 @@ export default function HomeScreen() {
               </View>
             </View>
           )}
-
-          {/* THE NEW STABLE DATE PICKER MODAL */}
-          <DatePicker
-            modal
-            open={isDatePickerOpen}
-            date={displayDate}
-            mode="datetime"
-            theme={activeTheme === 'dark' ? 'dark' : 'light'}
-            onConfirm={(date) => {
-              setIsDatePickerOpen(false); // Closes modal
-              const key = currentType === 'events' ? 'eventDate' : 'remindAt';
-              setForm(f => ({ ...f, [key]: date.toISOString() })); // Saves date
-            }}
-            onCancel={() => {
-              setIsDatePickerOpen(false); // Closes modal on cancel
-            }}
-          />
         </>
       );
+      
       case 'passkeys': return (
         <>
           <Field label="Account Name" value={form.title} key_="title" placeholder="e.g. GitHub, Gmail" {...commonProps} />
@@ -550,6 +545,7 @@ export default function HomeScreen() {
           <Field label="Secret Key" value={form.secret} key_="secret" placeholder="JBSWY3DPEHPK3PXP" secureEntry {...commonProps} onTogglePassword={handleSecurePasswordToggle} />
         </>
       );
+      
       default: return null;
     }
   };
@@ -733,6 +729,55 @@ export default function HomeScreen() {
             theme={activeTheme}
           />
       </Modal>
+
+      {pickerState.visible && (
+        <DateTimePicker
+          value={pickerState.tempDate || displayDate}
+          mode={pickerState.mode}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          minimumDate={new Date()}
+          themeVariant={activeTheme === 'dark' ? 'dark' : 'light'}
+          onChange={(event, selectedDate) => {
+            // User tapped cancel
+            if (event.type === 'dismissed') {
+              setPickerState(prev => ({ ...prev, visible: false }));
+              return;
+            }
+
+            if (Platform.OS === 'android') {
+              if (pickerState.mode === 'date' && selectedDate) {
+                // Date selected, now open time picker
+                setPickerState({
+                  visible: true,
+                  mode: 'time',
+                  tempDate: selectedDate,
+                });
+                return;
+              }
+
+              // Time selected on Android
+              if (pickerState.mode === 'time' && selectedDate) {
+                const finalDate = new Date(pickerState.tempDate);
+                finalDate.setHours(selectedDate.getHours(), selectedDate.getMinutes(), 0);
+                
+                setPickerState(prev => ({ ...prev, visible: false }));
+                const currentType = detailItem ? detailItem.type : activeSection;
+                const key = currentType === 'events' ? 'eventDate' : 'remindAt';
+                setForm(f => ({ ...f, [key]: finalDate.toISOString() }));
+                return;
+              }
+            }
+
+            // iOS handler
+            setPickerState(prev => ({ ...prev, visible: false }));
+            if (selectedDate) {
+              const currentType = detailItem ? detailItem.type : activeSection;
+              const key = currentType === 'events' ? 'eventDate' : 'remindAt';
+              setForm(f => ({ ...f, [key]: selectedDate.toISOString() }));
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
